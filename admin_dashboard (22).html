@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LOCALZIP Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'], heading: ['Poppins', 'sans-serif'] },
+                    colors: { primary: '#0c831f', primaryDark: '#0a6b18', secondary: '#f8cb46' }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #f8fafc; color: #1e293b; -webkit-tap-highlight-color: transparent; }
+        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        /* Custom scrollbar for tables */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    </style>
+</head>
+<body class="font-sans antialiased h-screen flex overflow-hidden selection:bg-primary selection:text-white">
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="fixed top-4 right-4 sm:top-6 sm:right-6 z-[9999] flex flex-col gap-2 pointer-events-none w-full max-w-[90vw] sm:max-w-sm"></div>
+
+    <!-- Audio element for continuous ringing -->
+    <audio id="order-alert-sound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
+
+    <!-- Admin Login Screen -->
+    <div id="admin-login-screen" class="fixed inset-0 bg-gray-900 z-[100] flex items-center justify-center p-4">
+        <div class="bg-white p-6 sm:p-8 rounded-3xl shadow-2xl w-full max-w-md border border-gray-100 text-center">
+            <div class="w-16 h-16 bg-primary/10 text-primary rounded-2xl flex items-center justify-center font-bold text-3xl mx-auto mb-4 shadow-sm">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <h2 class="text-2xl font-heading font-bold text-gray-900 mb-2">Admin Access</h2>
+            <p class="text-gray-500 mb-8 text-sm">Sign in with your Admin Email and Password.</p>
+            
+            <form id="admin-login-form" onsubmit="handleAdminLogin(event)" class="space-y-4 text-left">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Email Address</label>
+                    <div class="relative">
+                        <i class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="email" id="admin-email" required placeholder="admin@localzip.com" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 pl-12 pr-4 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all font-medium">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Password</label>
+                    <div class="relative">
+                        <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="password" id="admin-password" required placeholder="••••••••" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 pl-12 pr-4 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all font-medium">
+                    </div>
+                </div>
+                <button type="submit" id="admin-login-btn" class="w-full bg-primary hover:bg-primaryDark text-white py-3.5 rounded-xl font-bold shadow-lg shadow-primary/30 transition-all mt-4">Login Securely</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard Content -->
+    <div id="admin-dashboard-content" class="hidden w-full h-full flex flex-col sm:flex-row relative">
+        
+        <!-- Mobile Header -->
+        <div class="sm:hidden bg-white border-b border-gray-200 p-4 flex justify-between items-center z-20 flex-shrink-0 shadow-sm">
+            <div class="font-heading font-extrabold text-xl tracking-tight text-gray-900">
+                LOCAL<span class="text-primary">ZIP</span> Admin
+            </div>
+            <button onclick="toggleMobileMenu()" class="text-gray-900 hover:text-primary transition-colors text-2xl w-10 h-10 flex items-center justify-center bg-gray-50 rounded-lg">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+
+        <!-- Sidebar Overlay for Mobile -->
+        <div id="sidebar-overlay" onclick="toggleMobileMenu()" class="fixed inset-0 bg-black/60 z-30 hidden sm:hidden opacity-0 transition-opacity duration-300"></div>
+
+        <!-- Sidebar -->
+        <div id="admin-sidebar" class="fixed inset-y-0 left-0 transform -translate-x-full sm:relative sm:translate-x-0 w-64 bg-white border-r border-gray-200 flex flex-col shadow-lg sm:shadow-sm z-40 transition-transform duration-300 ease-in-out h-full">
+            <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+                <div>
+                    <div class="font-heading font-extrabold text-2xl tracking-tight text-gray-900">
+                        LOCAL<span class="text-primary">ZIP</span>
+                    </div>
+                    <div class="mt-1 text-xs font-bold text-gray-400 uppercase tracking-wider">Admin Panel</div>
+                </div>
+                <button onclick="toggleMobileMenu()" class="sm:hidden text-gray-400 hover:text-red-500 text-xl w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <nav class="flex-1 p-4 space-y-2 overflow-y-auto custom-scrollbar">
+                <button onclick="switchTab('orders')" id="nav-orders" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors bg-primary/10 text-primary">
+                    <i class="fas fa-satellite-dish w-5 text-center"></i> Live Orders <span id="nav-badge-orders" class="ml-auto bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold hidden">0</span>
+                </button>
+                <button onclick="switchTab('categories')" id="nav-categories" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-gray-600 hover:bg-gray-50 transition-colors">
+                    <i class="fas fa-th-large w-5 text-center"></i> Categories
+                </button>
+                <button onclick="switchTab('menu')" id="nav-menu" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-gray-600 hover:bg-gray-50 transition-colors">
+                    <i class="fas fa-box-open w-5 text-center"></i> Products
+                </button>
+                <button onclick="switchTab('restaurants')" id="nav-restaurants" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-gray-600 hover:bg-gray-50 transition-colors">
+                    <i class="fas fa-store w-5 text-center"></i> Stores
+                </button>
+            </nav>
+            
+            <div class="p-4 border-t border-gray-100 bg-gray-50">
+                <button onclick="requestPushPermissions()" id="btn-push-auth" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-blue-600 hover:bg-blue-50 transition-colors mb-2 text-sm">
+                    <i class="fas fa-bell w-5 text-center"></i> Push Alerts
+                </button>
+                <button onclick="handleLogout()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-red-600 hover:bg-red-50 transition-colors text-sm">
+                    <i class="fas fa-sign-out-alt w-5 text-center"></i> Logout
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="flex-1 flex flex-col h-[calc(100vh-73px)] sm:h-full overflow-hidden bg-gray-50/50 relative">
+            
+            <!-- Live Orders Tab -->
+            <div id="tab-orders" class="flex-1 flex flex-col h-full overflow-hidden">
+                <div class="p-4 sm:p-6 lg:p-8 border-b border-gray-200 bg-white shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 z-0">
+                    <div>
+                        <h1 class="text-xl sm:text-2xl font-heading font-bold text-gray-900">Live Orders</h1>
+                        <p class="text-xs sm:text-sm text-gray-500 mt-1">Monitor incoming orders in real-time.</p>
+                    </div>
+                    <div class="flex items-center gap-2 text-xs font-bold text-green-600 bg-green-50 px-3 py-1.5 rounded-full border border-green-100 self-end sm:self-auto shadow-sm">
+                        <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div> Live Sync
+                    </div>
+                </div>
+
+                <div class="flex-1 overflow-auto p-4 sm:p-6 lg:p-8 custom-scrollbar">
+                    <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-x-auto custom-scrollbar">
+                        <table class="w-full text-left text-sm whitespace-nowrap min-w-[800px]">
+                            <thead class="bg-gray-50 text-gray-600 font-semibold border-b border-gray-200">
+                                <tr>
+                                    <th class="px-4 sm:px-6 py-4">Order Details</th>
+                                    <th class="px-4 sm:px-6 py-4">Customer Info</th>
+                                    <th class="px-4 sm:px-6 py-4">Items Summary</th>
+                                    <th class="px-4 sm:px-6 py-4">Amount</th>
+                                    <th class="px-4 sm:px-6 py-4">Status & Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orders-table-body" class="divide-y divide-gray-100">
+                                <!-- Orders Injected Here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Categories Tab -->
+            <div id="tab-categories" class="flex-1 flex flex-col h-full overflow-hidden hidden">
+                <div class="p-4 sm:p-6 lg:p-8 border-b border-gray-200 bg-white shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 z-0">
+                    <div>
+                        <h1 class="text-xl sm:text-2xl font-heading font-bold text-gray-900">Categories</h1>
+                        <p class="text-xs sm:text-sm text-gray-500 mt-1">Manage product categories and layout.</p>
+                    </div>
+                    <button onclick="openCategoryModal()" class="w-full sm:w-auto bg-primary hover:bg-primaryDark text-white px-5 py-2.5 rounded-xl font-bold shadow-sm transition-all flex items-center justify-center gap-2 text-sm">
+                        <i class="fas fa-plus"></i> Add Category
+                    </button>
+                </div>
+
+                <div class="flex-1 overflow-auto p-4 sm:p-6 lg:p-8 custom-scrollbar">
+                    <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-x-auto custom-scrollbar">
+                        <table class="w-full text-left text-sm whitespace-nowrap min-w-[600px]">
+                            <thead class="bg-gray-50 text-gray-600 font-semibold border-b border-gray-200">
+                                <tr>
+                                    <th class="px-4 sm:px-6 py-4">Image</th>
+                                    <th class="px-4 sm:px-6 py-4">Category Name</th>
+                                    <th class="px-4 sm:px-6 py-4">Group Section</th>
+                                    <th class="px-4 sm:px-6 py-4 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="categories-table-body" class="divide-y divide-gray-100">
+                                <!-- Categories Injected Here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Menu/Products Tab -->
+            <div id="tab-menu" class="flex-1 flex flex-col h-full overflow-hidden hidden">
+                <div class="p-4 sm:p-6 lg:p-8 border-b border-gray-200 bg-white shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 z-0">
+                    <div>
+                        <h1 class="text-xl sm:text-2xl font-heading font-bold text-gray-900">Products Catalog</h1>
+                        <p class="text-xs sm:text-sm text-gray-500 mt-1">Manage all your groceries and items.</p>
+                    </div>
+                    <button onclick="openItemModal()" class="w-full sm:w-auto bg-primary hover:bg-primaryDark text-white px-5 py-2.5 rounded-xl font-bold shadow-sm transition-all flex items-center justify-center gap-2 text-sm">
+                        <i class="fas fa-plus"></i> Add Product
+                    </button>
+                </div>
+
+                <div class="flex-1 overflow-auto p-4 sm:p-6 lg:p-8 custom-scrollbar">
+                    <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-x-auto custom-scrollbar">
+                        <table class="w-full text-left text-sm whitespace-nowrap min-w-[900px]">
+                            <thead class="bg-gray-50 text-gray-600 font-semibold border-b border-gray-200">
+                                <tr>
+                                    <th class="px-4 sm:px-6 py-4">Image</th>
+                                    <th class="px-4 sm:px-6 py-4">Details</th>
+                                    <th class="px-4 sm:px-6 py-4">Store</th>
+                                    <th class="px-4 sm:px-6 py-4">Category</th>
+                                    <th class="px-4 sm:px-6 py-4">Pricing</th>
+                                    <th class="px-4 sm:px-6 py-4 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="menu-table-body" class="divide-y divide-gray-100">
+                                <!-- Menu Items Injected Here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Restaurants/Stores Tab -->
+            <div id="tab-restaurants" class="flex-1 flex flex-col h-full overflow-hidden hidden">
+                <div class="p-4 sm:p-6 lg:p-8 border-b border-gray-200 bg-white shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 z-0">
+                    <div>
+                        <h1 class="text-xl sm:text-2xl font-heading font-bold text-gray-900">Partner Stores</h1>
+                        <p class="text-xs sm:text-sm text-gray-500 mt-1">Manage local grocery partners.</p>
+                    </div>
+                    <button onclick="openRestaurantModal()" class="w-full sm:w-auto bg-primary hover:bg-primaryDark text-white px-5 py-2.5 rounded-xl font-bold shadow-sm transition-all flex items-center justify-center gap-2 text-sm">
+                        <i class="fas fa-plus"></i> Add Store
+                    </button>
+                </div>
+
+                <div class="flex-1 overflow-auto p-4 sm:p-6 lg:p-8 custom-scrollbar">
+                    <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-x-auto custom-scrollbar">
+                        <table class="w-full text-left text-sm whitespace-nowrap min-w-[700px]">
+                            <thead class="bg-gray-50 text-gray-600 font-semibold border-b border-gray-200">
+                                <tr>
+                                    <th class="px-4 sm:px-6 py-4">Image</th>
+                                    <th class="px-4 sm:px-6 py-4">Store Name</th>
+                                    <th class="px-4 sm:px-6 py-4">Description/Categories</th>
+                                    <th class="px-4 sm:px-6 py-4 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="restaurants-table-body" class="divide-y divide-gray-100">
+                                <!-- Stores Injected Here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Product Modal -->
+    <div id="item-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden transform scale-95 transition-transform duration-300 flex flex-col max-h-[90vh]" id="item-modal-content">
+            <div class="p-4 sm:p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                <h3 class="text-lg sm:text-xl font-heading font-bold text-gray-900" id="item-modal-title">Add New Product</h3>
+                <button onclick="closeItemModal()" class="text-gray-400 hover:text-red-500 transition-colors w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200"><i class="fas fa-times"></i></button>
+            </div>
+            
+            <form id="item-form" onsubmit="handleItemSubmit(event)" class="p-4 sm:p-6 overflow-y-auto space-y-4 sm:space-y-5 custom-scrollbar flex-1">
+                <input type="hidden" id="item-fb-id">
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Product Name</label>
+                        <input type="text" id="item-name" required class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm">
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Assign to Store <span class="text-xs text-gray-400 font-normal ml-1">(Required)</span></label>
+                        <select id="item-restaurant" required class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm">
+                            <!-- Populated via JS -->
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Category</label>
+                        <select id="item-category" required class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm">
+                            <!-- Populated dynamically via JS -->
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Selling Price (₹)</label>
+                        <input type="number" id="item-price" required min="0" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">MRP (₹) <span class="text-xs text-gray-400 font-normal ml-1">(Optional)</span></label>
+                        <input type="number" id="item-mrp" min="0" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm" placeholder="For discounts">
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Main Image URL</label>
+                        <input type="url" id="item-img" required class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm" placeholder="https://...">
+                    </div>
+                    
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Description <span class="text-xs text-gray-400 font-normal ml-1">(Optional)</span></label>
+                        <textarea id="item-desc" rows="2" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm resize-none"></textarea>
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-gray-100 flex flex-col sm:flex-row justify-end gap-3 mt-4">
+                    <button type="button" onclick="closeItemModal()" class="w-full sm:w-auto px-5 py-2.5 rounded-xl font-semibold text-gray-600 hover:bg-gray-100 transition-colors text-sm">Cancel</button>
+                    <button type="submit" id="item-submit-btn" class="w-full sm:w-auto bg-primary hover:bg-primaryDark text-white px-6 py-2.5 rounded-xl font-bold shadow-sm transition-all text-sm flex items-center justify-center gap-2">
+                        <i class="fas fa-save"></i> Save Product
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add/Edit Category Modal -->
+    <div id="category-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden transform scale-95 transition-transform duration-300 flex flex-col max-h-[90vh]" id="category-modal-content">
+            <div class="p-4 sm:p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                <h3 class="text-lg sm:text-xl font-heading font-bold text-gray-900" id="category-modal-title">Add New Category</h3>
+                <button onclick="closeCategoryModal()" class="text-gray-400 hover:text-red-500 transition-colors w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200"><i class="fas fa-times"></i></button>
+            </div>
+            
+            <form id="category-form" onsubmit="handleCategorySubmit(event)" class="p-4 sm:p-6 space-y-4 overflow-y-auto">
+                <input type="hidden" id="cat-fb-id">
+                
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Category Name</label>
+                    <input type="text" id="cat-name" required class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm" placeholder="e.g. Vegetables">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Group (Header Section)</label>
+                    <input type="text" id="cat-group" required class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm" list="cat-groups-datalist" placeholder="e.g. Grocery & Kitchen">
+                    <datalist id="cat-groups-datalist">
+                        <option value="Grocery & Kitchen">
+                        <option value="Snacks & Drinks">
+                        <option value="Beauty & Personal Care">
+                    </datalist>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Category Image URL</label>
+                    <input type="url" id="cat-img" required class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm" placeholder="https://...">
+                </div>
+
+                <div class="pt-4 flex flex-col sm:flex-row justify-end gap-3 mt-2">
+                    <button type="button" onclick="closeCategoryModal()" class="w-full sm:w-auto px-5 py-2.5 rounded-xl font-semibold text-gray-600 hover:bg-gray-100 transition-colors text-sm">Cancel</button>
+                    <button type="submit" id="cat-submit-btn" class="w-full sm:w-auto bg-primary hover:bg-primaryDark text-white px-6 py-2.5 rounded-xl font-bold shadow-sm transition-all text-sm">
+                        Save Category
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add/Edit Store Modal -->
+    <div id="restaurant-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden transform scale-95 transition-transform duration-300 flex flex-col max-h-[90vh]" id="restaurant-modal-content">
+            <div class="p-4 sm:p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                <h3 class="text-lg sm:text-xl font-heading font-bold text-gray-900" id="restaurant-modal-title">Add New Store</h3>
+                <button onclick="closeRestaurantModal()" class="text-gray-400 hover:text-red-500 transition-colors w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200"><i class="fas fa-times"></i></button>
+            </div>
+            
+            <form id="restaurant-form" onsubmit="handleRestaurantSubmit(event)" class="p-4 sm:p-6 space-y-4 overflow-y-auto">
+                <input type="hidden" id="rest-fb-id">
+                
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Store Name</label>
+                    <input type="text" id="rest-name" required class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Description / Categories</label>
+                    <input type="text" id="rest-cuisines" required class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm" placeholder="e.g. Fresh Produce, Dairy, Bakery">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Cover Image URL</label>
+                    <input type="url" id="rest-img" required class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm" placeholder="https://...">
+                </div>
+
+                <div class="pt-4 flex flex-col sm:flex-row justify-end gap-3 mt-2">
+                    <button type="button" onclick="closeRestaurantModal()" class="w-full sm:w-auto px-5 py-2.5 rounded-xl font-semibold text-gray-600 hover:bg-gray-100 transition-colors text-sm">Cancel</button>
+                    <button type="submit" id="rest-submit-btn" class="w-full sm:w-auto bg-primary hover:bg-primaryDark text-white px-6 py-2.5 rounded-xl font-bold shadow-sm transition-all text-sm">
+                        Save Store
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, onSnapshot, doc, setDoc, deleteDoc, updateDoc, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-messaging.js";
+
+        // Restore Original Firebase Configuration for Database Management
+        const providedConfig = {
+            apiKey: "AIzaSyAZA70bgxqeMsRMP1ri6B_FNLyD5CZA3fc",
+            authDomain: "localzip.firebaseapp.com",
+            projectId: "localzip",
+            storageBucket: "localzip.firebasestorage.app",
+            messagingSenderId: "593061380454",
+            appId: "1:593061380454:web:c7c0558e52e4b7897488a7",
+            measurementId: "G-XVZQJGKLCP"
+        };
+        
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : providedConfig;
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'localzip';
+        
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const messaging = getMessaging(app);
+
+        // State variables
+        let currentUser = null;
+        let menuData = [];
+        let restaurantsData = [];
+        let categoriesData = [];
+        let allOrders = [];
+        
+        let knownOrderIds = new Set();
+        let initialLoad = true;
+
+        // Delivery Tracking State
+        let watchId = null;
+        let activeTrackingOrderId = null;
+
+        // Mobile Menu Logic
+        let isMobileMenuOpen = false;
+
+        window.toggleMobileMenu = function() {
+            isMobileMenuOpen = !isMobileMenuOpen;
+            const sidebar = document.getElementById('admin-sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            
+            if (isMobileMenuOpen) {
+                overlay.classList.remove('hidden');
+                requestAnimationFrame(() => overlay.classList.remove('opacity-0'));
+                sidebar.classList.remove('-translate-x-full');
+            } else {
+                overlay.classList.add('opacity-0');
+                sidebar.classList.add('-translate-x-full');
+                setTimeout(() => overlay.classList.add('hidden'), 300);
+            }
+        }
+
+        window.showToast = function(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            const icon = type === 'success' ? '<i class="fas fa-check-circle text-green-500"></i>' : (type === 'error' ? '<i class="fas fa-times-circle text-red-500"></i>' : '<i class="fas fa-bell text-blue-500"></i>');
+            toast.className = `glass border border-gray-200 px-4 py-3 rounded-xl shadow-xl flex items-center gap-3 transform transition-all duration-300 translate-x-[120%]`;
+            toast.innerHTML = `${icon} <span class="font-medium text-sm text-gray-800">${message}</span>`;
+            
+            container.appendChild(toast);
+            requestAnimationFrame(() => toast.classList.remove('translate-x-[120%]'));
+            setTimeout(() => {
+                toast.classList.add('translate-x-[120%]');
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        window.switchTab = function(tabName) {
+            // Close mobile menu if open
+            if(isMobileMenuOpen) toggleMobileMenu();
+
+            ['orders', 'categories', 'menu', 'restaurants'].forEach(t => {
+                document.getElementById(`tab-${t}`).classList.add('hidden');
+                document.getElementById(`nav-${t}`).className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-gray-600 hover:bg-gray-50 transition-colors";
+            });
+            
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+            
+            let activeIcon = tabName === 'orders' ? 'fa-satellite-dish' : (tabName === 'menu' ? 'fa-box-open' : (tabName === 'categories' ? 'fa-th-large' : 'fa-store'));
+            document.getElementById(`nav-${tabName}`).className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors bg-primary/10 text-primary";
+            document.getElementById(`nav-${tabName}`).innerHTML = `<i class="fas ${activeIcon} w-5 text-center"></i> ${tabName.charAt(0).toUpperCase() + tabName.slice(1)}`;
+            
+            if (tabName === 'orders') {
+                document.getElementById('nav-badge-orders').classList.add('hidden');
+                document.getElementById(`nav-${tabName}`).innerHTML += ` <span id="nav-badge-orders" class="ml-auto bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold hidden">0</span>`;
+            }
+        }
+
+        window.handleAdminLogin = async function(e) {
+            e.preventDefault();
+            const email = document.getElementById('admin-email').value;
+            const password = document.getElementById('admin-password').value;
+            const btn = document.getElementById('admin-login-btn');
+            
+            // PRE-LOAD AUDIO ON CLICK TO BYPASS BROWSER AUTOPLAY BLOCK
+            document.getElementById('order-alert-sound').load();
+            
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Authenticating...';
+            btn.disabled = true;
+
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                document.getElementById('admin-login-screen').classList.add('hidden');
+                document.getElementById('admin-dashboard-content').classList.remove('hidden');
+                document.getElementById('admin-dashboard-content').classList.add('flex');
+                showToast("Welcome to Admin Dashboard!");
+            } catch (error) {
+                console.error("Login error:", error);
+                let errorMsg = "Invalid credentials.";
+                if(error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') errorMsg = "Wrong Email or Password.";
+                if(error.code === 'auth/operation-not-allowed') errorMsg = "Enable Email/Password Login in Firebase Console!";
+                showToast(errorMsg, "error");
+            } finally {
+                btn.innerHTML = 'Login Securely';
+                btn.disabled = false;
+            }
+        }
+
+        window.handleLogout = async function() {
+            try {
+                await signOut(auth);
+                document.getElementById('admin-login-screen').classList.remove('hidden');
+                document.getElementById('admin-dashboard-content').classList.add('hidden');
+                document.getElementById('admin-dashboard-content').classList.remove('flex');
+                document.getElementById('admin-login-form').reset();
+                showToast("Logged out successfully");
+            } catch (error) {
+                console.error("Logout Error", error);
+            }
+        }
+
+        async function initAuth() {
+            onAuthStateChanged(auth, (user) => {
+                // Ensure only actual logged in users (not anonymous from main app) access this
+                if (user && user.email) {
+                    currentUser = user;
+                    document.getElementById('admin-login-screen').classList.add('hidden');
+                    document.getElementById('admin-dashboard-content').classList.remove('hidden');
+                    document.getElementById('admin-dashboard-content').classList.add('flex');
+                    setupFirestoreListener();
+                } else {
+                    document.getElementById('admin-login-screen').classList.remove('hidden');
+                    document.getElementById('admin-dashboard-content').classList.add('hidden');
+                    document.getElementById('admin-dashboard-content').classList.remove('flex');
+                }
+            });
+        }
+
+        window.requestPushPermissions = async function() {
+            try {
+                const btn = document.getElementById('btn-push-auth');
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin w-5 text-center"></i> Configuring...';
+                
+                const permission = await Notification.requestPermission();
+                if (permission === 'granted') {
+                    // Injecting your live VAPID key here
+                    const currentToken = await getToken(messaging, { vapidKey: 'BBfPpWbzx-ykbBXvExA3E7P6jDXQzH6X7GnpfmrxJQIV1gmhjpuufTQEZs5DD9XnRUXXmRvIynDTrZ3t5Be8iC0' });
+                    
+                    if (currentToken) {
+                        const tokenRef = doc(db, 'artifacts', appId, 'public', 'admin_tokens', currentToken);
+                        await setDoc(tokenRef, { token: currentToken, createdAt: Date.now() });
+                        
+                        btn.innerHTML = '<i class="fas fa-check-circle w-5 text-green-500 text-center"></i> Alerts Enabled';
+                        showToast("Push notifications enabled successfully!");
+                    }
+                } else {
+                    btn.innerHTML = '<i class="fas fa-bell-slash w-5 text-center"></i> Permission Denied';
+                    showToast("Notification permission denied by browser.", "error");
+                }
+            } catch (error) {
+                console.error("FCM Error Details:", error);
+                document.getElementById('btn-push-auth').innerHTML = '<i class="fas fa-bell w-5 text-center"></i> Enable Push Alerts';
+                
+                // Show the exact error message from Firebase so we know what is wrong
+                showToast(`Error: ${error.message}`, "error");
+            }
+        }
+
+        onMessage(messaging, (payload) => {
+            console.log('Message received in foreground ', payload);
+            showToast(`🔔 ${payload.notification.title}: ${payload.notification.body}`);
+            
+            try { 
+                const alertSound = document.getElementById('order-alert-sound');
+                alertSound.currentTime = 0; 
+                alertSound.loop = true;
+                alertSound.play();
+                setTimeout(() => { alertSound.pause(); alertSound.currentTime = 0; }, 5000);
+            } catch(e){}
+        });
+
+        function setupFirestoreListener() {
+            // 0. Categories
+            const catRef = collection(db, 'artifacts', appId, 'public', 'data', 'categories');
+            onSnapshot(catRef, (snapshot) => {
+                categoriesData = snapshot.docs.map(doc => ({ fbId: doc.id, ...doc.data() }));
+                renderCategoriesTable();
+                updateDropdowns();
+            }, (err) => console.error("Category sync error:", err));
+
+            // 1. Menu Items
+            const menuRef = collection(db, 'artifacts', appId, 'public', 'data', 'menuItems');
+            onSnapshot(menuRef, (snapshot) => {
+                menuData = snapshot.docs.map(doc => ({ fbId: doc.id, ...doc.data() }));
+                renderMenuTable();
+            }, (err) => console.error("Menu sync error:", err));
+
+            // 2. Restaurants
+            const restRef = collection(db, 'artifacts', appId, 'public', 'data', 'restaurants');
+            onSnapshot(restRef, (snapshot) => {
+                restaurantsData = snapshot.docs.map(doc => ({ fbId: doc.id, ...doc.data() }));
+                renderRestaurantsTable();
+                updateDropdowns();
+            }, (err) => console.error("Restaurant sync error:", err));
+
+            // 3. Live Orders
+            const ordersRef = collection(db, 'artifacts', appId, 'public', 'data', 'orders');
+            onSnapshot(ordersRef, (snapshot) => {
+                const newIds = [];
+                allOrders = snapshot.docs.map(doc => {
+                    const data = doc.data();
+                    if (!knownOrderIds.has(doc.id)) {
+                        knownOrderIds.add(doc.id);
+                        if (data.status === 'Preparing') newIds.push(doc.id);
+                    }
+                    return { fbId: doc.id, ...data };
+                });
+
+                if (!initialLoad && newIds.length > 0) {
+                    showToast(`New Order Received!`, 'bell');
+                    
+                    try { 
+                        const alertSound = document.getElementById('order-alert-sound');
+                        alertSound.currentTime = 0; 
+                        alertSound.loop = true;
+                        
+                        let playPromise = alertSound.play();
+                        if (playPromise !== undefined) {
+                            playPromise.then(_ => {
+                                setTimeout(() => { alertSound.pause(); alertSound.currentTime = 0; }, 5000);
+                            }).catch(error => {
+                                console.log("Audio blocked by browser. Please interact with the screen first.", error);
+                            });
+                        }
+                    } catch(e){ console.error("Audio error:", e); }
+                }
+                initialLoad = false;
+                renderOrdersTable();
+            }, (err) => console.error("Orders sync error:", err));
+        }
+
+        function updateDropdowns() {
+            const catSelect = document.getElementById('item-category');
+            if(catSelect) {
+                catSelect.innerHTML = categoriesData.map(c => `<option value="${c.name}">${c.name} (${c.group || 'Uncategorized'})</option>`).join('');
+            }
+            
+            const restSelect = document.getElementById('item-restaurant');
+            if(restSelect) {
+                restSelect.innerHTML = `<option value="global">No Specific Store (Global)</option>` + 
+                    restaurantsData.map(r => `<option value="${r.fbId}">${r.name}</option>`).join('');
+            }
+        }
+
+        window.updateOrderStatus = async function(orderId, newStatus) {
+            try {
+                const orderRef = doc(db, 'artifacts', appId, 'public', 'data', 'orders', orderId);
+                
+                const updateData = { status: newStatus };
+                if (newStatus === 'Accepted' && currentUser) {
+                    updateData.deliveryPartnerId = currentUser.uid;
+                }
+
+                await updateDoc(orderRef, updateData);
+                showToast(`Order status updated to ${newStatus}`);
+
+                if ((newStatus === 'Delivered' || newStatus === 'Cancelled') && activeTrackingOrderId === orderId) {
+                    stopLocationTracking();
+                }
+            } catch (error) {
+                console.error("Failed to update status:", error);
+                showToast("Failed to update status", "error");
+            }
+        }
+
+        window.startLocationTracking = function(orderId) {
+            if (!navigator.geolocation) {
+                showToast("GPS not supported by your device", "error");
+                return;
+            }
+            
+            if (watchId) stopLocationTracking();
+            
+            activeTrackingOrderId = orderId;
+            showToast("Started sharing Live GPS with customer!", "success");
+            renderOrdersTable(); 
+            
+            watchId = navigator.geolocation.watchPosition(async (position) => {
+                if(!activeTrackingOrderId) return;
+                
+                const { latitude, longitude } = position.coords;
+                try {
+                    const orderRef = doc(db, 'artifacts', appId, 'public', 'data', 'orders', activeTrackingOrderId);
+                    await updateDoc(orderRef, {
+                        partnerLocation: { lat: latitude, lng: longitude, updated: Date.now() }
+                    });
+                } catch(e) {
+                    console.error("Error syncing location", e);
+                }
+            }, (error) => {
+                console.error("GPS Error", error);
+                showToast("Please enable GPS/Location Services", "error");
+                stopLocationTracking();
+            }, { enableHighAccuracy: true, maximumAge: 10000, timeout: 5000 });
+        }
+
+        window.stopLocationTracking = function() {
+            if (watchId) {
+                navigator.geolocation.clearWatch(watchId);
+                watchId = null;
+            }
+            activeTrackingOrderId = null;
+            showToast("Live GPS tracking stopped.", "bell");
+            renderOrdersTable(); 
+        }
+
+        function renderOrdersTable() {
+            const tbody = document.getElementById('orders-table-body');
+            const badge = document.getElementById('nav-badge-orders');
+            
+            const activeCount = allOrders.filter(o => o.status === 'Preparing' || o.status === 'Accepted' || o.status === 'Picked Up').length;
+            
+            if (activeCount > 0) {
+                badge.textContent = activeCount;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+
+            if(allOrders.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="px-4 sm:px-6 py-12 text-center text-gray-500"><i class="fas fa-inbox text-3xl mb-3 text-gray-300 block"></i>No orders found.</td></tr>`;
+                return;
+            }
+
+            const sortedOrders = [...allOrders].sort((a,b) => b.timestamp - a.timestamp);
+
+            tbody.innerHTML = sortedOrders.map(order => {
+                const time = new Date(order.timestamp).toLocaleString('en-IN', { month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' });
+                const itemsList = order.items.map(i => `${i.qty}x ${i.name}`).join(', ');
+                
+                let statusColor = 'bg-gray-100 text-gray-600';
+                if(order.status === 'Preparing') statusColor = 'bg-yellow-100 text-yellow-700 border-yellow-200';
+                if(order.status === 'Accepted') statusColor = 'bg-blue-100 text-blue-700 border-blue-200';
+                if(order.status === 'Picked Up') statusColor = 'bg-purple-100 text-purple-700 border-purple-200';
+                if(order.status === 'Delivered') statusColor = 'bg-green-100 text-green-700 border-green-200';
+                if(order.status === 'Cancelled') statusColor = 'bg-red-100 text-red-700 border-red-200';
+
+                let trackingUI = '';
+                if (order.status === 'Accepted' || order.status === 'Picked Up') {
+                    if (activeTrackingOrderId === order.fbId) {
+                        trackingUI = `<button onclick="stopLocationTracking()" class="mt-2 w-full bg-red-50 text-red-600 border border-red-200 px-2 py-1.5 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition-colors hover:bg-red-100"><div class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div> Stop GPS Sharing</button>`;
+                    } else {
+                        trackingUI = `<button onclick="startLocationTracking('${order.fbId}')" class="mt-2 w-full bg-blue-50 text-blue-600 border border-blue-200 px-2 py-1.5 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition-colors hover:bg-blue-100"><i class="fas fa-location-arrow"></i> Share Live Location</button>`;
+                    }
+                }
+
+                return `
+                <tr class="hover:bg-gray-50/50 transition-colors">
+                    <td class="px-4 sm:px-6 py-4">
+                        <div class="font-bold text-gray-900">${order.orderId}</div>
+                        <div class="text-[11px] text-gray-500 mt-0.5"><i class="far fa-clock"></i> ${time}</div>
+                        <div class="mt-1 text-[10px] font-bold uppercase ${order.payment === 'cod' ? 'text-green-600' : 'text-blue-600'}">${order.payment}</div>
+                    </td>
+                    <td class="px-4 sm:px-6 py-4">
+                        <div class="font-semibold text-gray-900">${order.customer.name}</div>
+                        <div class="text-xs text-gray-500 mt-0.5 max-w-[200px] whitespace-normal leading-relaxed">${order.customer.address}</div>
+                        <a href="tel:${order.customer.phone}" class="text-primary text-[11px] font-bold mt-1 inline-block bg-primary/10 px-2 py-1 rounded"><i class="fas fa-phone-alt"></i> ${order.customer.phone}</a>
+                    </td>
+                    <td class="px-4 sm:px-6 py-4">
+                        <div class="text-xs text-gray-600 max-w-[200px] whitespace-normal leading-relaxed bg-gray-50 p-2 rounded">${itemsList}</div>
+                    </td>
+                    <td class="px-4 sm:px-6 py-4 font-bold text-gray-900">₹${order.totals.total.toFixed(2)}</td>
+                    <td class="px-4 sm:px-6 py-4">
+                        <select onchange="updateOrderStatus('${order.fbId}', this.value)" class="px-2.5 py-1.5 text-[11px] font-bold rounded-md border ${statusColor} outline-none cursor-pointer appearance-none w-full shadow-sm">
+                            <option value="Preparing" ${order.status === 'Preparing' ? 'selected' : ''}>Preparing</option>
+                            <option value="Accepted" ${order.status === 'Accepted' ? 'selected' : ''}>Accepted</option>
+                            <option value="Picked Up" ${order.status === 'Picked Up' ? 'selected' : ''}>Picked Up</option>
+                            <option value="Delivered" ${order.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
+                            <option value="Cancelled" ${order.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+                        </select>
+                        ${trackingUI}
+                    </td>
+                </tr>
+                `;
+            }).join('');
+        }
+
+        function renderMenuTable() {
+            const tbody = document.getElementById('menu-table-body');
+            if(menuData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="px-4 sm:px-6 py-12 text-center text-gray-500">No products found.</td></tr>`;
+                return;
+            }
+            
+            tbody.innerHTML = menuData.map(item => {
+                const restName = item.restaurantId === 'global' ? 'Global' : (restaurantsData.find(r => r.fbId === item.restaurantId)?.name || 'Unknown');
+                return `
+                <tr class="hover:bg-gray-50/50 transition-colors">
+                    <td class="px-4 sm:px-6 py-4">
+                        <div class="w-12 h-12 rounded-lg bg-white overflow-hidden border border-gray-100 p-1 flex items-center justify-center shadow-sm">
+                            <img src="${item.img}" class="max-w-full max-h-full object-contain" onerror="this.src='https://placehold.co/100x100'">
+                        </div>
+                    </td>
+                    <td class="px-4 sm:px-6 py-4">
+                        <div class="font-bold text-gray-900 line-clamp-1 max-w-[150px] sm:max-w-[200px]">${item.name}</div>
+                        <div class="text-xs text-gray-500 line-clamp-1 mt-0.5 max-w-[150px] sm:max-w-[200px]">${item.desc || 'No description'}</div>
+                    </td>
+                    <td class="px-4 sm:px-6 py-4 text-xs font-medium text-gray-600">${restName}</td>
+                    <td class="px-4 sm:px-6 py-4"><span class="bg-gray-100 border border-gray-200 text-gray-600 px-2 py-1 rounded text-[11px] font-semibold">${item.category}</span></td>
+                    <td class="px-4 sm:px-6 py-4">
+                        <div class="font-bold text-gray-900">₹${item.price}</div>
+                        ${item.mrp > item.price ? `<div class="text-[10px] text-gray-400 line-through">MRP: ₹${item.mrp}</div>` : ''}
+                    </td>
+                    <td class="px-4 sm:px-6 py-4 text-right">
+                        <div class="flex items-center justify-end gap-2">
+                            <button onclick="openItemModal('${item.fbId}')" class="text-blue-500 hover:text-blue-700 p-2 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"><i class="fas fa-edit"></i></button>
+                            <button onclick="deleteItem('${item.fbId}')" class="text-red-500 hover:text-red-700 p-2 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </td>
+                </tr>
+                `;
+            }).join('');
+        }
+
+        function renderCategoriesTable() {
+            const tbody = document.getElementById('categories-table-body');
+            if(categoriesData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="px-4 sm:px-6 py-12 text-center text-gray-500">No categories found.</td></tr>`;
+                return;
+            }
+            
+            tbody.innerHTML = categoriesData.map(cat => `
+                <tr class="hover:bg-gray-50/50 transition-colors">
+                    <td class="px-4 sm:px-6 py-4">
+                        <div class="w-12 h-12 rounded-lg bg-gray-100 overflow-hidden border border-gray-200 p-1 flex items-center justify-center">
+                            <img src="${cat.img}" class="max-w-full max-h-full object-contain mix-blend-multiply" onerror="this.src='https://placehold.co/100x100'">
+                        </div>
+                    </td>
+                    <td class="px-4 sm:px-6 py-4 font-bold text-gray-900">${cat.name}</td>
+                    <td class="px-4 sm:px-6 py-4 text-sm text-gray-600">${cat.group || 'Uncategorized'}</td>
+                    <td class="px-4 sm:px-6 py-4 text-right">
+                        <div class="flex items-center justify-end gap-2">
+                            <button onclick="openCategoryModal('${cat.fbId}')" class="text-blue-500 hover:text-blue-700 p-2 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"><i class="fas fa-edit"></i></button>
+                            <button onclick="deleteCategory('${cat.fbId}')" class="text-red-500 hover:text-red-700 p-2 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderRestaurantsTable() {
+            const tbody = document.getElementById('restaurants-table-body');
+            if(restaurantsData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="px-4 sm:px-6 py-12 text-center text-gray-500">No stores found.</td></tr>`;
+                return;
+            }
+            
+            tbody.innerHTML = restaurantsData.map(rest => `
+                <tr class="hover:bg-gray-50/50 transition-colors">
+                    <td class="px-4 sm:px-6 py-4">
+                        <div class="w-20 h-12 rounded-lg bg-gray-100 overflow-hidden border border-gray-200">
+                            <img src="${rest.img}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/200x100'">
+                        </div>
+                    </td>
+                    <td class="px-4 sm:px-6 py-4 font-bold text-gray-900">${rest.name}</td>
+                    <td class="px-4 sm:px-6 py-4 text-sm text-gray-600">${rest.cuisines || ''}</td>
+                    <td class="px-4 sm:px-6 py-4 text-right">
+                        <div class="flex items-center justify-end gap-2">
+                            <button onclick="openRestaurantModal('${rest.fbId}')" class="text-blue-500 hover:text-blue-700 p-2 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"><i class="fas fa-edit"></i></button>
+                            <button onclick="deleteRestaurant('${rest.fbId}')" class="text-red-500 hover:text-red-700 p-2 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        window.openItemModal = function(fbId = null) {
+            updateDropdowns();
+            const modal = document.getElementById('item-modal');
+            const content = document.getElementById('item-modal-content');
+            
+            if (fbId) {
+                const item = menuData.find(i => i.fbId === fbId);
+                document.getElementById('item-modal-title').textContent = 'Edit Product';
+                document.getElementById('item-fb-id').value = item.fbId;
+                document.getElementById('item-name').value = item.name;
+                document.getElementById('item-restaurant').value = item.restaurantId || 'global';
+                document.getElementById('item-category').value = item.category;
+                document.getElementById('item-price').value = item.price;
+                document.getElementById('item-mrp').value = item.mrp || '';
+                document.getElementById('item-img').value = item.img;
+                document.getElementById('item-desc').value = item.desc || '';
+            } else {
+                document.getElementById('item-modal-title').textContent = 'Add New Product';
+                document.getElementById('item-form').reset();
+                document.getElementById('item-fb-id').value = '';
+            }
+
+            modal.classList.remove('hidden');
+            requestAnimationFrame(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+            });
+        }
+
+        window.closeItemModal = function() {
+            const modal = document.getElementById('item-modal');
+            const content = document.getElementById('item-modal-content');
+            modal.classList.add('opacity-0');
+            content.classList.add('scale-95');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        window.handleItemSubmit = async function(e) {
+            e.preventDefault();
+            const fbId = document.getElementById('item-fb-id').value;
+            const btn = document.getElementById('item-submit-btn');
+            const origHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+            btn.disabled = true;
+
+            const itemData = {
+                id: fbId ? menuData.find(i => i.fbId === fbId).id : Date.now().toString(),
+                name: document.getElementById('item-name').value,
+                restaurantId: document.getElementById('item-restaurant').value,
+                category: document.getElementById('item-category').value,
+                price: parseFloat(document.getElementById('item-price').value),
+                mrp: parseFloat(document.getElementById('item-mrp').value) || 0,
+                img: document.getElementById('item-img').value,
+                desc: document.getElementById('item-desc').value,
+                updatedAt: Date.now()
+            };
+
+            try {
+                if (fbId) {
+                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'menuItems', fbId), itemData);
+                    showToast("Product updated successfully!");
+                } else {
+                    await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'menuItems'), itemData);
+                    showToast("Product added successfully!");
+                }
+                closeItemModal();
+            } catch (error) {
+                console.error("Error saving product:", error);
+                showToast("Failed to save product", "error");
+            } finally {
+                btn.innerHTML = origHtml;
+                btn.disabled = false;
+            }
+        }
+
+        window.deleteItem = async function(fbId) {
+            if(confirm("Are you sure you want to delete this product?")) {
+                try {
+                    await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'menuItems', fbId));
+                    showToast("Product deleted");
+                } catch(e) { console.error(e); showToast("Error deleting", "error"); }
+            }
+        }
+
+        window.openCategoryModal = function(fbId = null) {
+            const modal = document.getElementById('category-modal');
+            const content = document.getElementById('category-modal-content');
+            
+            if (fbId) {
+                const cat = categoriesData.find(c => c.fbId === fbId);
+                document.getElementById('category-modal-title').textContent = 'Edit Category';
+                document.getElementById('cat-fb-id').value = cat.fbId;
+                document.getElementById('cat-name').value = cat.name;
+                document.getElementById('cat-group').value = cat.group || '';
+                document.getElementById('cat-img').value = cat.img;
+            } else {
+                document.getElementById('category-modal-title').textContent = 'Add New Category';
+                document.getElementById('category-form').reset();
+                document.getElementById('cat-fb-id').value = '';
+            }
+
+            modal.classList.remove('hidden');
+            requestAnimationFrame(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+            });
+        }
+
+        window.closeCategoryModal = function() {
+            const modal = document.getElementById('category-modal');
+            const content = document.getElementById('category-modal-content');
+            modal.classList.add('opacity-0');
+            content.classList.add('scale-95');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        window.handleCategorySubmit = async function(e) {
+            e.preventDefault();
+            const fbId = document.getElementById('cat-fb-id').value;
+            const btn = document.getElementById('cat-submit-btn');
+            btn.innerHTML = 'Saving...';
+            btn.disabled = true;
+
+            const catData = {
+                name: document.getElementById('cat-name').value,
+                group: document.getElementById('cat-group').value,
+                img: document.getElementById('cat-img').value,
+                updatedAt: Date.now()
+            };
+
+            try {
+                if (fbId) {
+                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'categories', fbId), catData);
+                    showToast("Category updated!");
+                } else {
+                    await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'categories'), catData);
+                    showToast("Category added!");
+                }
+                closeCategoryModal();
+            } catch (error) {
+                console.error(error);
+                showToast("Error saving category", "error");
+            } finally {
+                btn.innerHTML = 'Save Category';
+                btn.disabled = false;
+            }
+        }
+
+        window.deleteCategory = async function(fbId) {
+            if(confirm("Are you sure you want to delete this category?")) {
+                try {
+                    await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'categories', fbId));
+                    showToast("Category deleted");
+                } catch(e) { console.error(e); }
+            }
+        }
+
+        window.openRestaurantModal = function(fbId = null) {
+            const modal = document.getElementById('restaurant-modal');
+            const content = document.getElementById('restaurant-modal-content');
+            
+            if (fbId) {
+                const rest = restaurantsData.find(r => r.fbId === fbId);
+                document.getElementById('restaurant-modal-title').textContent = 'Edit Store';
+                document.getElementById('rest-fb-id').value = rest.fbId;
+                document.getElementById('rest-name').value = rest.name;
+                document.getElementById('rest-cuisines').value = rest.cuisines || '';
+                document.getElementById('rest-img').value = rest.img;
+            } else {
+                document.getElementById('restaurant-modal-title').textContent = 'Add New Store';
+                document.getElementById('restaurant-form').reset();
+                document.getElementById('rest-fb-id').value = '';
+            }
+
+            modal.classList.remove('hidden');
+            requestAnimationFrame(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+            });
+        }
+
+        window.closeRestaurantModal = function() {
+            const modal = document.getElementById('restaurant-modal');
+            const content = document.getElementById('restaurant-modal-content');
+            modal.classList.add('opacity-0');
+            content.classList.add('scale-95');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        window.handleRestaurantSubmit = async function(e) {
+            e.preventDefault();
+            const fbId = document.getElementById('rest-fb-id').value;
+            const btn = document.getElementById('rest-submit-btn');
+            btn.innerHTML = 'Saving...';
+            btn.disabled = true;
+
+            const restData = {
+                name: document.getElementById('rest-name').value,
+                cuisines: document.getElementById('rest-cuisines').value,
+                img: document.getElementById('rest-img').value,
+                updatedAt: Date.now()
+            };
+
+            try {
+                if (fbId) {
+                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'restaurants', fbId), restData);
+                    showToast("Store updated!");
+                } else {
+                    await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'restaurants'), restData);
+                    showToast("Store added!");
+                }
+                closeRestaurantModal();
+            } catch (error) {
+                console.error(error);
+                showToast("Error saving store", "error");
+            } finally {
+                btn.innerHTML = 'Save Store';
+                btn.disabled = false;
+            }
+        }
+
+        window.deleteRestaurant = async function(fbId) {
+            if(confirm("Are you sure you want to delete this store? Note: You should also reassign or delete its products.")) {
+                try {
+                    await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'restaurants', fbId));
+                    showToast("Store deleted");
+                } catch(e) { console.error(e); }
+            }
+        }
+
+        // Initialize App on DOM Load
+        window.addEventListener('DOMContentLoaded', () => {
+            initAuth();
+        });
+
+    </script>
+</body>
+</html>
