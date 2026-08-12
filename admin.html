@@ -5,9 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>LOCALZIP | Admin Control Center</title>
     
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts & Font Awesome Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -49,10 +47,8 @@
 </head>
 <body class="font-sans antialiased h-[100dvh] flex flex-col sm:flex-row overflow-hidden selection:bg-primary selection:text-white">
 
-    <!-- Toast Notifications Container -->
     <div id="toast-container" class="fixed top-4 right-4 sm:top-6 sm:right-6 z-[9999] flex flex-col gap-2 pointer-events-none w-full max-w-[90vw] sm:max-w-sm"></div>
 
-    <!-- Alarm Banner for New Orders -->
     <div id="alarm-banner" class="fixed top-0 left-0 w-full bg-red-600 text-white px-4 py-3 z-[9000] hidden flex items-center justify-between shadow-2xl animate-siren">
         <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-full bg-white text-red-600 flex items-center justify-center font-bold text-xl animate-bounce">
@@ -68,14 +64,13 @@
         </button>
     </div>
 
-    <!-- Admin Authentication Screen -->
     <div id="admin-auth-screen" class="fixed inset-0 bg-gray-950 z-[10000] flex items-center justify-center p-4">
         <div class="bg-white p-6 sm:p-8 rounded-3xl shadow-2xl w-full max-w-sm border border-gray-100 text-center relative">
             <div class="w-16 h-16 bg-primary/10 text-primary rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4 font-bold">
                 <i class="fas fa-user-shield"></i>
             </div>
             <h2 class="text-2xl font-heading font-extrabold text-gray-900 mb-1">Admin Access</h2>
-            <p class="text-gray-500 text-xs mb-6">Enter administrator email and password to unlock console.</p>
+            <p class="text-gray-500 text-xs mb-6">Enter administrator credentials to unlock control center.</p>
 
             <form onsubmit="handleAdminLogin(event)" class="space-y-4 text-left">
                 <div>
@@ -94,7 +89,6 @@
         </div>
     </div>
 
-    <!-- Mobile Header -->
     <div class="sm:hidden bg-gray-900 border-b border-gray-800 px-4 py-3 flex justify-between items-center z-20 shrink-0">
         <div class="flex items-center gap-2">
             <span class="font-heading font-extrabold text-xl text-white">LOCAL<span class="text-red-500">ZIP</span></span>
@@ -114,10 +108,8 @@
         </div>
     </div>
 
-    <!-- Mobile Sidebar Backdrop Overlay -->
     <div id="sidebar-overlay" onclick="toggleMobileSidebar()" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-30 hidden sm:hidden opacity-0 transition-opacity duration-300"></div>
 
-    <!-- Sidebar Navigation -->
     <aside id="admin-sidebar" class="fixed inset-y-0 left-0 transform -translate-x-full sm:relative sm:translate-x-0 w-72 bg-gray-900 text-white flex flex-col z-40 transition-transform duration-300 shrink-0">
         <div class="p-6 border-b border-gray-800 flex items-center justify-between">
             <div>
@@ -130,7 +122,7 @@
         </div>
 
         <nav class="flex-1 p-4 space-y-2 overflow-y-auto custom-scrollbar">
-            <!-- App Store Service Status Toggle Card in Navigation List Sequence -->
+            <!-- App Service Status Toggle Card -->
             <div class="mb-3 p-3.5 bg-gray-950/80 border border-gray-800/80 rounded-2xl flex flex-col gap-2.5 shadow-inner">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-2">
@@ -158,6 +150,14 @@
                 <span>Store Earnings & Sales</span>
             </button>
 
+            <button onclick="switchTab('offers')" id="nav-offers" class="w-full flex items-center justify-between px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white font-medium transition-all">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-gift w-5 text-center text-secondary"></i>
+                    <span>Free Gift Campaigns</span>
+                </div>
+                <span id="badge-offer-status" class="bg-emerald-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">0 ACTIVE</span>
+            </button>
+
             <button onclick="switchTab('banners')" id="nav-banners" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white font-medium transition-all">
                 <i class="fas fa-images w-5 text-center"></i>
                 <span>Hero Banners</span>
@@ -176,14 +176,6 @@
             <button onclick="switchTab('stores')" id="nav-stores" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white font-medium transition-all">
                 <i class="fas fa-store w-5 text-center"></i>
                 <span>Partner Stores</span>
-            </button>
-
-            <button onclick="switchTab('offers')" id="nav-offers" class="w-full flex items-center justify-between px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white font-medium transition-all">
-                <div class="flex items-center gap-3">
-                    <i class="fas fa-gift w-5 text-center text-secondary"></i>
-                    <span>Free Gift Offers</span>
-                </div>
-                <span id="badge-offer-status" class="bg-emerald-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">0 ACTIVE</span>
             </button>
 
             <button onclick="switchTab('riders')" id="nav-riders" class="w-full flex items-center justify-between px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white font-medium transition-all">
@@ -211,7 +203,6 @@
         </div>
     </aside>
 
-    <!-- Main Content Area -->
     <main class="flex-1 h-full overflow-hidden flex flex-col bg-slate-50">
 
         <!-- Live Orders Tab -->
@@ -270,7 +261,7 @@
             </div>
         </div>
 
-        <!-- Analytics Tab -->
+        <!-- Store Earnings & Analytics Tab -->
         <div id="tab-analytics" class="flex-1 flex flex-col h-full overflow-y-auto p-4 sm:p-8 custom-scrollbar hidden">
             <div class="mb-6">
                 <h1 class="text-2xl sm:text-3xl font-heading font-extrabold text-gray-900">Store Earnings & Analytics</h1>
@@ -314,8 +305,8 @@
             <div class="bg-white rounded-2xl border border-gray-200/80 p-5 shadow-sm mb-6">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-5">
                     <div>
-                        <h2 class="text-lg font-heading font-bold text-gray-900">Per-Store Earnings Breakdown</h2>
-                        <p class="text-xs text-gray-500">Click any store row below to view its daily sales trend chart and itemized sales report.</p>
+                        <h2 class="text-lg font-heading font-bold text-gray-900">Per-Store Earnings & Item Breakdown</h2>
+                        <p class="text-xs text-gray-500">Click "View Sales Report" on any store to inspect itemized products sold with images, quantities, and prices.</p>
                     </div>
                 </div>
 
@@ -326,9 +317,9 @@
                                 <th class="px-5 py-3">Store Info</th>
                                 <th class="px-5 py-3">Owner Phone</th>
                                 <th class="px-5 py-3">Today's Sales</th>
-                                <th class="px-5 py-3">Yesterday's Sales</th>
                                 <th class="px-5 py-3">Monthly Sales</th>
                                 <th class="px-5 py-3">Total Revenue</th>
+                                <th class="px-5 py-3 text-right">Itemized Breakdown</th>
                             </tr>
                         </thead>
                         <tbody id="analytics-store-table-body" class="divide-y divide-gray-100"></tbody>
@@ -337,74 +328,94 @@
             </div>
         </div>
 
-        <!-- Banners, Products, Categories, Stores, Offers, Delivery Partner Tabs -->
-        <div id="tab-banners" class="flex-1 flex flex-col h-full overflow-y-auto p-4 sm:p-8 custom-scrollbar hidden">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                <div>
-                    <h1 class="text-2xl sm:text-3xl font-heading font-extrabold text-gray-900">Hero Banners</h1>
-                    <p class="text-xs sm:text-sm text-gray-500 mt-0.5">Manage promotional banners on the customer app.</p>
-                </div>
-            </div>
-            <div id="banners-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-        </div>
-
-        <div id="tab-products" class="flex-1 flex flex-col h-full overflow-y-auto p-4 sm:p-8 custom-scrollbar hidden">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                <div>
-                    <h1 class="text-2xl sm:text-3xl font-heading font-extrabold text-gray-900">Products Catalog</h1>
-                    <p class="text-xs sm:text-sm text-gray-500 mt-0.5">Manage stock items, pricing, discounts, and store mapping.</p>
-                </div>
-            </div>
-            <div id="products-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"></div>
-        </div>
-
-        <div id="tab-categories" class="flex-1 flex flex-col h-full overflow-y-auto p-4 sm:p-8 custom-scrollbar hidden">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                <div>
-                    <h1 class="text-2xl sm:text-3xl font-heading font-extrabold text-gray-900">Categories</h1>
-                    <p class="text-xs sm:text-sm text-gray-500 mt-0.5">Organize store items into distinct visual categories.</p>
-                </div>
-            </div>
-            <div id="categories-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"></div>
-        </div>
-
-        <div id="tab-stores" class="flex-1 flex flex-col h-full overflow-y-auto p-4 sm:p-8 custom-scrollbar hidden">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                <div>
-                    <h1 class="text-2xl sm:text-3xl font-heading font-extrabold text-gray-900">Partner Stores</h1>
-                    <p class="text-xs sm:text-sm text-gray-500 mt-0.5">Manage local stores and owner allotments.</p>
-                </div>
-            </div>
-            <div id="stores-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-        </div>
-
         <div id="tab-offers" class="flex-1 flex flex-col h-full overflow-y-auto p-4 sm:p-8 custom-scrollbar hidden">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
                 <div>
                     <h1 class="text-2xl sm:text-3xl font-heading font-extrabold text-gray-900">Free Gift Campaigns</h1>
-                    <p class="text-xs sm:text-sm text-gray-500 mt-0.5">Manage promotional free gift offers based on catalog items.</p>
+                    <p class="text-xs sm:text-sm text-gray-500 mt-0.5">Create automatic promotional gift offers based on trigger products or spend thresholds.</p>
                 </div>
+                <button onclick="openOfferModal()" class="bg-primary hover:bg-primaryDark text-white px-4 py-2.5 rounded-xl font-bold text-xs transition-all shadow-md flex items-center gap-2">
+                    <i class="fas fa-plus"></i> Create Gift Campaign
+                </button>
             </div>
             <div id="offers-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </div>
 
+        <!-- Hero Banners Tab -->
+        <div id="tab-banners" class="flex-1 flex flex-col h-full overflow-y-auto p-4 sm:p-8 custom-scrollbar hidden">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                <div>
+                    <h1 class="text-2xl sm:text-3xl font-heading font-extrabold text-gray-900">Hero Banners</h1>
+                    <p class="text-xs sm:text-sm text-gray-500 mt-0.5">Manage promotional carousel banners shown on the customer app.</p>
+                </div>
+                <button onclick="openBannerModal()" class="bg-primary hover:bg-primaryDark text-white px-4 py-2.5 rounded-xl font-bold text-xs transition-all shadow-md flex items-center gap-2">
+                    <i class="fas fa-plus"></i> Add New Banner
+                </button>
+            </div>
+            <div id="banners-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </div>
+
+        <!-- Catalog Products Tab -->
+        <div id="tab-products" class="flex-1 flex flex-col h-full overflow-y-auto p-4 sm:p-8 custom-scrollbar hidden">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                <div>
+                    <h1 class="text-2xl sm:text-3xl font-heading font-extrabold text-gray-900">Products Catalog</h1>
+                    <p class="text-xs sm:text-sm text-gray-500 mt-0.5">Manage stock items, pricing, MRP discounts, and partner store mapping.</p>
+                </div>
+                <button onclick="openProductModal()" class="bg-primary hover:bg-primaryDark text-white px-4 py-2.5 rounded-xl font-bold text-xs transition-all shadow-md flex items-center gap-2">
+                    <i class="fas fa-plus"></i> Add New Product
+                </button>
+            </div>
+            <div id="products-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"></div>
+        </div>
+
+        <!-- Categories Tab -->
+        <div id="tab-categories" class="flex-1 flex flex-col h-full overflow-y-auto p-4 sm:p-8 custom-scrollbar hidden">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                <div>
+                    <h1 class="text-2xl sm:text-3xl font-heading font-extrabold text-gray-900">Categories</h1>
+                    <p class="text-xs sm:text-sm text-gray-500 mt-0.5">Organize grocery items into distinct visual groupings.</p>
+                </div>
+                <button onclick="openCategoryModal()" class="bg-primary hover:bg-primaryDark text-white px-4 py-2.5 rounded-xl font-bold text-xs transition-all shadow-md flex items-center gap-2">
+                    <i class="fas fa-plus"></i> Add New Category
+                </button>
+            </div>
+            <div id="categories-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"></div>
+        </div>
+
+        <!-- Partner Stores Tab -->
+        <div id="tab-stores" class="flex-1 flex flex-col h-full overflow-y-auto p-4 sm:p-8 custom-scrollbar hidden">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                <div>
+                    <h1 class="text-2xl sm:text-3xl font-heading font-extrabold text-gray-900">Partner Stores</h1>
+                    <p class="text-xs sm:text-sm text-gray-500 mt-0.5">Manage local partner stores, owner mobile allotments, and addresses.</p>
+                </div>
+                <button onclick="openStoreModal()" class="bg-primary hover:bg-primaryDark text-white px-4 py-2.5 rounded-xl font-bold text-xs transition-all shadow-md flex items-center gap-2">
+                    <i class="fas fa-plus"></i> Add Partner Store
+                </button>
+            </div>
+            <div id="stores-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </div>
+
+        <!-- Delivery Partners Tab -->
         <div id="tab-riders" class="flex-1 flex flex-col h-full overflow-y-auto p-4 sm:p-8 custom-scrollbar hidden">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
                 <div>
                     <h1 class="text-2xl sm:text-3xl font-heading font-extrabold text-gray-900">Delivery Partners</h1>
-                    <p class="text-xs sm:text-sm text-gray-500 mt-0.5">Manage delivery partner credentials and active statuses.</p>
+                    <p class="text-xs sm:text-sm text-gray-500 mt-0.5">Manage delivery partner credentials, passwords, and active statuses.</p>
                 </div>
+                <button onclick="openRiderModal()" class="bg-primary hover:bg-primaryDark text-white px-4 py-2.5 rounded-xl font-bold text-xs transition-all shadow-md flex items-center gap-2">
+                    <i class="fas fa-plus"></i> Add Delivery Partner
+                </button>
             </div>
             <div id="riders-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </div>
 
     </main>
 
-    <!-- Order Detail Modal -->
     <div id="order-detail-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-3 sm:p-6 opacity-0 transition-opacity duration-300">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-3xl max-h-[92vh] flex flex-col overflow-hidden border border-gray-100 transform scale-95 transition-transform duration-300 relative" id="order-detail-modal-content">
             
-            <!-- Modal Header -->
             <div class="bg-gray-900 text-white p-4 sm:p-6 flex justify-between items-center shrink-0">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-2xl bg-primary/20 text-primary flex items-center justify-center font-bold text-lg">
@@ -423,10 +434,8 @@
                 </button>
             </div>
 
-            <!-- Modal Content Body -->
             <div class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 custom-scrollbar">
                 
-                <!-- Customer Details Card -->
                 <div class="bg-slate-50 border border-slate-200/80 rounded-2xl p-4 flex flex-col sm:flex-row justify-between gap-4">
                     <div class="space-y-1">
                         <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400">Customer Details</span>
@@ -442,7 +451,6 @@
                     </div>
                 </div>
 
-                <!-- Products Ordered List -->
                 <div>
                     <div class="flex justify-between items-center mb-3">
                         <h4 class="font-heading font-bold text-gray-900 text-sm sm:text-base flex items-center gap-2">
@@ -456,7 +464,6 @@
                     <div id="modal-items-list" class="space-y-3"></div>
                 </div>
 
-                <!-- Order Calculation Summary -->
                 <div class="bg-gray-50 border border-gray-200 rounded-2xl p-4 sm:p-5">
                     <h5 class="font-bold text-gray-900 text-xs uppercase tracking-wider mb-3">Order Payment Summary</h5>
                     <div class="space-y-2 text-xs sm:text-sm">
@@ -481,7 +488,6 @@
 
             </div>
 
-            <!-- Modal Footer Actions -->
             <div class="bg-gray-100 border-t border-gray-200 p-4 shrink-0 flex flex-wrap sm:flex-nowrap justify-between items-center gap-3">
                 <div class="flex items-center gap-2 w-full sm:w-auto">
                     <label class="text-xs font-bold text-gray-600 uppercase hidden sm:inline">Status:</label>
@@ -506,7 +512,276 @@
         </div>
     </div>
 
-    <!-- WhatsApp Dispatch Modal -->
+    <!-- Store Sales Breakdown Modal -->
+    <div id="store-sales-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[110] hidden flex items-center justify-center p-3 sm:p-6 opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden border border-gray-100 transform scale-95 transition-transform duration-300 relative">
+            <div class="bg-gray-900 text-white p-4 sm:p-5 flex justify-between items-center shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-primary/20 text-primary flex items-center justify-center font-bold text-lg"><i class="fas fa-store"></i></div>
+                    <div>
+                        <h3 id="sales-modal-store-name" class="font-heading font-extrabold text-base sm:text-lg text-white">Store Sales Report</h3>
+                        <p id="sales-modal-owner-phone" class="text-xs text-gray-400">+91 Store Owner</p>
+                    </div>
+                </div>
+                <button onclick="closeStoreSalesModal()" class="text-gray-400 hover:text-white p-2 rounded-xl"><i class="fas fa-times text-xl"></i></button>
+            </div>
+
+            <div class="p-4 bg-gray-50 border-b border-gray-200 grid grid-cols-3 gap-3 text-center shrink-0">
+                <div class="bg-white p-2.5 rounded-xl border border-gray-200/80">
+                    <span class="text-[10px] font-bold text-gray-500 uppercase block">Today</span>
+                    <span id="sales-modal-today" class="font-extrabold text-primary text-sm sm:text-base">₹0.00</span>
+                </div>
+                <div class="bg-white p-2.5 rounded-xl border border-gray-200/80">
+                    <span class="text-[10px] font-bold text-gray-500 uppercase block">This Month</span>
+                    <span id="sales-modal-month" class="font-extrabold text-blue-600 text-sm sm:text-base">₹0.00</span>
+                </div>
+                <div class="bg-white p-2.5 rounded-xl border border-gray-200/80">
+                    <span class="text-[10px] font-bold text-gray-500 uppercase block">Total Units</span>
+                    <span id="sales-modal-units" class="font-extrabold text-purple-600 text-sm sm:text-base">0 Units</span>
+                </div>
+            </div>
+
+            <div class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-3 custom-scrollbar" id="sales-modal-items-list"></div>
+        </div>
+    </div>
+
+    <!-- Product Modal (Add / Edit) -->
+    <div id="product-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[120] hidden flex items-center justify-center p-3 sm:p-6 opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md p-6 border border-gray-100 transform scale-95 transition-transform duration-300 relative max-h-[92vh] overflow-y-auto custom-scrollbar">
+            <button onclick="closeProductModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-900"><i class="fas fa-times"></i></button>
+            <h3 class="text-lg font-heading font-bold text-gray-900 mb-4" id="product-modal-title">Add New Product</h3>
+
+            <form onsubmit="handleSaveProduct(event)" class="space-y-4 text-xs">
+                <input type="hidden" id="pm-id">
+                <div>
+                    <label class="block font-bold text-gray-700 uppercase mb-1">Product Name *</label>
+                    <input type="text" id="pm-name" required placeholder="e.g. Amul Toned Milk 500ml" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 outline-none focus:border-primary font-bold">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-gray-700 uppercase mb-1">Selling Price (₹) *</label>
+                        <input type="number" step="0.01" id="pm-price" required placeholder="27" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 outline-none focus:border-primary font-bold">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-gray-700 uppercase mb-1">MRP Price (₹)</label>
+                        <input type="number" step="0.01" id="pm-mrp" placeholder="30" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 outline-none focus:border-primary font-bold">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-gray-700 uppercase mb-1">Category *</label>
+                        <select id="pm-category" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 outline-none focus:border-primary font-bold"></select>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-gray-700 uppercase mb-1">Partner Store</label>
+                        <select id="pm-store" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 outline-none focus:border-primary font-bold"></select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-bold text-gray-700 uppercase mb-1">Product Image URL *</label>
+                    <input type="url" id="pm-img" required placeholder="https://images.unsplash.com/photo-..." class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 outline-none focus:border-primary font-medium">
+                </div>
+                <div>
+                    <label class="block font-bold text-gray-700 uppercase mb-1">Description</label>
+                    <textarea id="pm-desc" rows="2" placeholder="Product details..." class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 outline-none focus:border-primary font-medium"></textarea>
+                </div>
+                <button type="submit" class="w-full bg-primary hover:bg-primaryDark text-white font-bold py-3.5 rounded-xl shadow-md transition-all text-xs">
+                    Save Product
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Category Modal -->
+    <div id="category-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[120] hidden flex items-center justify-center p-3 sm:p-6 opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm p-6 border border-gray-100 transform scale-95 transition-transform duration-300 relative">
+            <button onclick="closeCategoryModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-900"><i class="fas fa-times"></i></button>
+            <h3 class="text-lg font-heading font-bold text-gray-900 mb-4" id="category-modal-title">Add Category</h3>
+
+            <form onsubmit="handleSaveCategory(event)" class="space-y-4 text-xs">
+                <input type="hidden" id="cm-id">
+                <div>
+                    <label class="block font-bold text-gray-700 uppercase mb-1">Category Name *</label>
+                    <input type="text" id="cm-name" required placeholder="e.g. Milk & Dairy" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 outline-none focus:border-primary font-bold">
+                </div>
+                <div>
+                    <label class="block font-bold text-gray-700 uppercase mb-1">Group Title</label>
+                    <input type="text" id="cm-group" placeholder="e.g. Daily Essentials" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 outline-none focus:border-primary font-bold">
+                </div>
+                <div>
+                    <label class="block font-bold text-gray-700 uppercase mb-1">Icon / Image URL *</label>
+                    <input type="url" id="cm-img" required placeholder="https://..." class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 outline-none focus:border-primary font-medium">
+                </div>
+                <button type="submit" class="w-full bg-primary hover:bg-primaryDark text-white font-bold py-3.5 rounded-xl shadow-md transition-all text-xs">
+                    Save Category
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Partner Store Modal -->
+    <div id="store-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[120] hidden flex items-center justify-center p-3 sm:p-6 opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm p-6 border border-gray-100 transform scale-95 transition-transform duration-300 relative">
+            <button onclick="closeStoreModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-900"><i class="fas fa-times"></i></button>
+            <h3 class="text-lg font-heading font-bold text-gray-900 mb-4" id="store-modal-title">Add Partner Store</h3>
+
+            <form onsubmit="handleSaveStore(event)" class="space-y-4 text-xs">
+                <input type="hidden" id="sm-id">
+                <div>
+                    <label class="block font-bold text-gray-700 uppercase mb-1">Store Name *</label>
+                    <input type="text" id="sm-name" required placeholder="e.g. City Super Market" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 outline-none focus:border-primary font-bold">
+                </div>
+                <div>
+                    <label class="block font-bold text-gray-700 uppercase mb-1">Owner Mobile Number *</label>
+                    <input type="tel" id="sm-phone" required pattern="[0-9]{10}" maxlength="10" placeholder="10-digit mobile number" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 outline-none focus:border-primary font-bold">
+                </div>
+                <div>
+                    <label class="block font-bold text-gray-700 uppercase mb-1">Store Logo / Image URL *</label>
+                    <input type="url" id="sm-img" required placeholder="https://..." class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 outline-none focus:border-primary font-medium">
+                </div>
+                <button type="submit" class="w-full bg-primary hover:bg-primaryDark text-white font-bold py-3.5 rounded-xl shadow-md transition-all text-xs">
+                    Save Partner Store
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Hero Banner Modal -->
+    <div id="banner-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[120] hidden flex items-center justify-center p-3 sm:p-6 opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm p-6 border border-gray-100 transform scale-95 transition-transform duration-300 relative">
+            <button onclick="closeBannerModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-900"><i class="fas fa-times"></i></button>
+            <h3 class="text-lg font-heading font-bold text-gray-900 mb-4" id="banner-modal-title">Add Hero Banner</h3>
+
+            <form onsubmit="handleSaveBanner(event)" class="space-y-4 text-xs">
+                <input type="hidden" id="bm-id">
+                <div>
+                    <label class="block font-bold text-gray-700 uppercase mb-1">Banner Title *</label>
+                    <input type="text" id="bm-title" required placeholder="e.g. Fresh Farm Groceries" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 outline-none focus:border-primary font-bold">
+                </div>
+                <div>
+                    <label class="block font-bold text-gray-700 uppercase mb-1">Subtitle</label>
+                    <input type="text" id="bm-subtitle" placeholder="e.g. Delivered in 30 Mins" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 outline-none focus:border-primary font-bold">
+                </div>
+                <div>
+                    <label class="block font-bold text-gray-700 uppercase mb-1">Image / Banner URL *</label>
+                    <input type="url" id="bm-img" required placeholder="https://..." class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 outline-none focus:border-primary font-medium">
+                </div>
+                <button type="submit" class="w-full bg-primary hover:bg-primaryDark text-white font-bold py-3.5 rounded-xl shadow-md transition-all text-xs">
+                    Save Banner
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div id="offer-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[120] hidden flex items-center justify-center p-3 sm:p-6 opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md p-6 border border-gray-100 transform scale-95 transition-transform duration-300 relative max-h-[92vh] overflow-y-auto custom-scrollbar">
+            <button onclick="closeOfferModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-900"><i class="fas fa-times"></i></button>
+            <h3 class="text-lg font-heading font-bold text-gray-900 mb-4" id="offer-modal-title">Create Gift Campaign</h3>
+
+            <form onsubmit="handleSaveOffer(event)" class="space-y-4 text-xs">
+                <input type="hidden" id="om-id">
+                
+                <div>
+                    <label class="block font-bold text-gray-700 uppercase mb-1">Campaign Headline *</label>
+                    <input type="text" id="om-headline" required placeholder="e.g. Buy 2 Coke Get 1 Lays Free" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 outline-none focus:border-primary font-bold">
+                </div>
+
+                <div>
+                    <label class="block font-bold text-gray-700 uppercase mb-1">Campaign Type *</label>
+                    <select id="om-type" onchange="toggleCampaignTypeFields()" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 outline-none focus:border-primary font-bold">
+                        <option value="BUY_PRODUCT_GET_GIFT">Type 1: Buy Product / Quantity → Get Free Gift</option>
+                        <option value="PURCHASE_AMOUNT_GET_GIFT">Type 2: Spend Minimum Amount → Get Free Gift</option>
+                    </select>
+                </div>
+
+                <!-- Type 1 Fields -->
+                <div id="om-type1-container" class="space-y-3 p-3 bg-amber-50/50 rounded-2xl border border-amber-200/80">
+                    <div>
+                        <label class="block font-bold text-gray-700 uppercase mb-1">Trigger Product (Buy) *</label>
+                        <select id="om-trigger-product" class="w-full bg-white border border-gray-200 rounded-xl p-2.5 outline-none focus:border-primary font-bold"></select>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-gray-700 uppercase mb-1">Trigger Quantity *</label>
+                        <input type="number" id="om-trigger-qty" min="1" value="2" class="w-full bg-white border border-gray-200 rounded-xl p-2.5 outline-none focus:border-primary font-bold">
+                    </div>
+                </div>
+
+                <!-- Type 2 Fields -->
+                <div id="om-type2-container" class="space-y-3 p-3 bg-emerald-50/50 rounded-2xl border border-emerald-200/80 hidden">
+                    <div>
+                        <label class="block font-bold text-gray-700 uppercase mb-1">Minimum Product Subtotal (₹) *</label>
+                        <input type="number" id="om-min-amount" min="1" value="200" placeholder="e.g. 200" class="w-full bg-white border border-gray-200 rounded-xl p-2.5 outline-none focus:border-primary font-bold">
+                    </div>
+                </div>
+
+                <!-- Shared Gift Product Selection -->
+                <div class="space-y-3 p-3 bg-gray-50 rounded-2xl border border-gray-200">
+                    <div>
+                        <label class="block font-bold text-gray-700 uppercase mb-1">Free Gift Product (Catalog) *</label>
+                        <select id="om-free-product" class="w-full bg-white border border-gray-200 rounded-xl p-2.5 outline-none focus:border-primary font-bold"></select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block font-bold text-gray-700 uppercase mb-1">Free Quantity *</label>
+                            <input type="number" id="om-free-qty" min="1" value="1" class="w-full bg-white border border-gray-200 rounded-xl p-2.5 outline-none focus:border-primary font-bold">
+                        </div>
+                        <div>
+                            <label class="block font-bold text-gray-700 uppercase mb-1">Max Gifts / Order</label>
+                            <input type="number" id="om-max-gifts" min="1" value="1" class="w-full bg-white border border-gray-200 rounded-xl p-2.5 outline-none focus:border-primary font-bold">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-gray-700 uppercase mb-1">Start Date</label>
+                        <input type="date" id="om-start-date" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 outline-none focus:border-primary font-bold">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-gray-700 uppercase mb-1">End Date</label>
+                        <input type="date" id="om-end-date" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 outline-none focus:border-primary font-bold">
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-200">
+                    <span class="font-bold text-gray-700">Campaign Active</span>
+                    <input type="checkbox" id="om-enabled" checked class="w-4 h-4 accent-primary">
+                </div>
+
+                <button type="submit" class="w-full bg-primary hover:bg-primaryDark text-white font-bold py-3.5 rounded-xl shadow-md transition-all text-xs">
+                    Save Gift Campaign
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delivery Partner Modal -->
+    <div id="rider-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[120] hidden flex items-center justify-center p-3 sm:p-6 opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm p-6 border border-gray-100 transform scale-95 transition-transform duration-300 relative">
+            <button onclick="closeRiderModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-900"><i class="fas fa-times"></i></button>
+            <h3 class="text-lg font-heading font-bold text-gray-900 mb-4" id="rider-modal-title">Add Delivery Partner</h3>
+
+            <form onsubmit="handleSaveRider(event)" class="space-y-4 text-xs">
+                <input type="hidden" id="rm-id">
+                <div>
+                    <label class="block font-bold text-gray-700 uppercase mb-1">Rider Full Name *</label>
+                    <input type="text" id="rm-name" required placeholder="e.g. Rahul Kumar" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 outline-none focus:border-primary font-bold">
+                </div>
+                <div>
+                    <label class="block font-bold text-gray-700 uppercase mb-1">Mobile Number (Login) *</label>
+                    <input type="tel" id="rm-phone" required pattern="[0-9]{10}" maxlength="10" placeholder="10-digit mobile number" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 outline-none focus:border-primary font-bold">
+                </div>
+                <div>
+                    <label class="block font-bold text-gray-700 uppercase mb-1">Password *</label>
+                    <input type="password" id="rm-password" required placeholder="••••••••" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 outline-none focus:border-primary font-bold">
+                </div>
+                <button type="submit" class="w-full bg-primary hover:bg-primaryDark text-white font-bold py-3.5 rounded-xl shadow-md transition-all text-xs">
+                    Save Partner Credentials
+                </button>
+            </form>
+        </div>
+    </div>
+
     <div id="whatsapp-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[110] hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md p-6 border border-gray-100 transform scale-95 transition-transform duration-300 relative">
             <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-xl mx-auto mb-4 font-bold">
@@ -528,7 +803,7 @@
 
                 <div>
                     <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Message Preview</label>
-                    <textarea id="wa-message-preview" rows="6" readonly class="w-full bg-gray-900 text-green-400 font-mono text-[11px] p-3 rounded-xl border border-gray-800 custom-scrollbar outline-none select-all"></textarea>
+                    <textarea id="wa-message-preview" rows="7" readonly class="w-full bg-gray-900 text-green-400 font-mono text-[11px] p-3 rounded-xl border border-gray-800 custom-scrollbar outline-none select-all"></textarea>
                 </div>
             </div>
 
@@ -541,34 +816,18 @@
         </div>
     </div>
 
-    <!-- Cancel Confirmation Modal -->
-    <div id="cancel-confirm-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[115] hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+    <!-- Delete Confirmation Modal -->
+    <div id="delete-confirm-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[130] hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm p-6 border border-gray-100 transform scale-95 transition-transform duration-300 text-center relative">
-            <div class="w-12 h-12 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center text-xl mx-auto mb-4 font-bold">
-                <i class="fas fa-exclamation-triangle"></i>
-            </div>
-            <h3 class="text-lg font-heading font-bold text-gray-900 mb-1">Confirm Cancellation</h3>
-            <p class="text-xs text-gray-500 mb-6" id="cancel-confirm-text">Are you sure you want to cancel this order? This action will set the status to CANCELLED.</p>
-
-            <div class="flex gap-3">
-                <button onclick="closeCancelModal()" class="flex-1 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl text-xs transition-colors">KEEP ORDER</button>
-                <button onclick="executeCancelOrder()" class="flex-1 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl text-xs shadow-md transition-colors">CANCEL ORDER</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Delete / Item Remove Modal -->
-    <div id="delete-confirm-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[120] hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm p-6 border border-gray-100 transform scale-95 transition-transform duration-300 text-center relative" id="delete-modal-content">
             <div class="w-12 h-12 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center text-xl mx-auto mb-4 font-bold">
                 <i class="fas fa-trash-alt"></i>
             </div>
             <h3 class="text-lg font-heading font-bold text-gray-900 mb-1">Confirm Deletion</h3>
-            <p class="text-xs text-gray-500 mb-6" id="delete-confirm-text">Are you sure you want to delete this record?</p>
+            <p class="text-xs text-gray-500 mb-6" id="delete-confirm-text">Are you sure you want to delete this item?</p>
 
             <div class="flex gap-3">
                 <button onclick="closeDeleteModal()" class="flex-1 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl text-xs transition-colors">Cancel</button>
-                <button onclick="executePendingDelete()" id="delete-modal-btn" class="flex-1 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl text-xs shadow-md transition-colors">Delete</button>
+                <button onclick="executePendingDelete()" class="flex-1 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl text-xs shadow-md transition-colors">Delete</button>
             </div>
         </div>
     </div>
@@ -727,7 +986,6 @@
         }
 
         function setupFirestoreListeners() {
-            // Service config
             onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'appConfig'), (docSnap) => {
                 if (docSnap.exists()) {
                     isServiceActive = docSnap.data().isServiceActive !== false;
@@ -737,7 +995,6 @@
                 updateAdminServiceUI();
             });
 
-            // Orders Listener
             onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'orders'), (snapshot) => {
                 const newOrders = [];
                 ordersData = snapshot.docs.map(docSnap => {
@@ -759,44 +1016,40 @@
                 renderOrders();
                 renderAnalytics();
 
-                // If active order detail modal is open, refresh its data
                 if (activeModalOrder) {
                     const currentUpdated = ordersData.find(o => o.id === activeModalOrder.id);
                     if (currentUpdated) openOrderDetailModal(currentUpdated.id);
                 }
             });
 
-            // Menu Items
             onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'menuItems'), (snapshot) => {
                 menuData = snapshot.docs.map(d => ({ id: d.id, fbId: d.id, ...d.data() }));
                 renderProducts();
+                populateDropdowns();
             });
 
-            // Stores
             onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'restaurants'), (snapshot) => {
                 restaurantsData = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
                 renderStores();
+                populateDropdowns();
             });
 
-            // Categories
             onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'categories'), (snapshot) => {
                 categoriesData = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
                 renderCategories();
+                populateDropdowns();
             });
 
-            // Banners
             onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'banners'), (snapshot) => {
                 bannersData = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
                 renderBanners();
             });
 
-            // Free Gift Campaigns
             onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'giftOffer'), (snapshot) => {
                 giftOffersData = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
                 renderOffers();
             });
 
-            // Delivery Partners
             onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'deliveryPartners'), (snapshot) => {
                 ridersData = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
                 renderRiders();
@@ -852,6 +1105,22 @@
             });
         }
 
+        function populateDropdowns() {
+            const catSelect = document.getElementById('pm-category');
+            if (catSelect) catSelect.innerHTML = categoriesData.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+            
+            const storeSelect = document.getElementById('pm-store');
+            if (storeSelect) storeSelect.innerHTML = `<option value="">Default Store</option>` + restaurantsData.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+
+            const triggerSelect = document.getElementById('om-trigger-product');
+            const freeSelect = document.getElementById('om-free-product');
+            if (triggerSelect && freeSelect) {
+                const opts = menuData.map(m => `<option value="${m.fbId}">${m.name} (₹${m.price})</option>`).join('');
+                triggerSelect.innerHTML = opts;
+                freeSelect.innerHTML = opts;
+            }
+        }
+
         window.renderOrders = function() {
             const container = document.getElementById('orders-table-body');
             const mobileCards = document.getElementById('orders-mobile-cards');
@@ -884,7 +1153,6 @@
                 const deliveryCharge = o.totals && o.totals.delivery !== undefined ? o.totals.delivery : 0;
                 const finalTotal = o.totals && o.totals.total !== undefined ? o.totals.total : (productsAmount + deliveryCharge);
                 const dateStr = o.timestamp ? new Date(o.timestamp).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'N/A';
-
                 const statusColor = o.status === 'CANCELLED' ? 'bg-red-100 text-red-700' : (o.status === 'Delivered' ? 'bg-emerald-100 text-emerald-700' : 'bg-primary/10 text-primary');
 
                 return `
@@ -909,11 +1177,6 @@
                         <button onclick="openWhatsAppModalForOrder('${o.id}')" class="bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all" title="Send to WhatsApp">
                             <i class="fab fa-whatsapp"></i>
                         </button>
-                        ${o.status !== 'CANCELLED' ? `
-                            <button onclick="triggerCancelModalForOrder('${o.id}')" class="bg-red-50 text-red-600 hover:bg-red-600 hover:text-white px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all" title="Cancel Order">
-                                <i class="fas fa-ban"></i>
-                            </button>
-                        ` : ''}
                     </td>
                 </tr>
                 `;
@@ -950,7 +1213,6 @@
                         <div class="flex gap-2 pt-2 border-t border-gray-100">
                             <button onclick="openOrderDetailModal('${o.id}')" class="flex-1 bg-primary text-white py-2 rounded-xl text-xs font-bold text-center">View Details</button>
                             <button onclick="openWhatsAppModalForOrder('${o.id}')" class="bg-emerald-100 text-emerald-700 p-2 rounded-xl text-xs font-bold"><i class="fab fa-whatsapp"></i></button>
-                            ${o.status !== 'CANCELLED' ? `<button onclick="triggerCancelModalForOrder('${o.id}')" class="bg-red-100 text-red-600 p-2 rounded-xl text-xs font-bold"><i class="fas fa-ban"></i></button>` : ''}
                         </div>
                     </div>
                     `;
@@ -1012,13 +1274,16 @@
                     const imgSrc = item.img || 'https://placehold.co/150?text=Product';
 
                     return `
-                    <div class="bg-white border border-gray-200/80 rounded-2xl p-3 sm:p-4 flex items-center justify-between gap-3 shadow-sm hover:border-primary/40 transition-all">
+                    <div class="bg-white border ${item.isFreeGift ? 'border-amber-300 bg-amber-50/20' : 'border-gray-200/80'} rounded-2xl p-3 sm:p-4 flex items-center justify-between gap-3 shadow-sm hover:border-primary/40 transition-all">
                         <div class="flex items-center gap-3 flex-1 overflow-hidden">
                             <img src="${imgSrc}" class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl object-contain bg-gray-50 p-1 border border-gray-100 shrink-0" onerror="this.src='https://placehold.co/150?text=Product'">
                             <div class="truncate">
-                                <h5 class="font-bold text-gray-900 text-xs sm:text-sm truncate">${item.name}</h5>
-                                <p class="text-[11px] text-gray-500 font-medium">Quantity: <span class="font-bold text-gray-900">${qty}</span> • Price: ₹${unitPrice.toFixed(2)} each</p>
-                                <p class="text-[10px] text-primary font-bold mt-0.5">Product Total: ₹${itemTotal.toFixed(2)}</p>
+                                <div class="flex items-center gap-2">
+                                    <h5 class="font-bold text-gray-900 text-xs sm:text-sm truncate">${item.name}</h5>
+                                    ${item.isFreeGift ? `<span class="bg-amber-500 text-white text-[9px] font-extrabold px-1.5 py-0.5 rounded">🎁 FREE GIFT</span>` : ''}
+                                </div>
+                                <p class="text-[11px] text-gray-500 font-medium">Quantity: <span class="font-bold text-gray-900">${qty}</span> • Price: ${item.isFreeGift ? 'FREE' : '₹' + unitPrice.toFixed(2)} each</p>
+                                <p class="text-[10px] ${item.isFreeGift ? 'text-amber-600 font-extrabold' : 'text-primary font-bold'} mt-0.5">Product Total: ₹${itemTotal.toFixed(2)}</p>
                             </div>
                         </div>
 
@@ -1032,7 +1297,6 @@
                 }).join('');
             }
 
-            // Calculate subtotal accurately
             const subtotal = items.reduce((sum, item) => sum + (parseFloat(item.price || 0) * parseInt(item.qty || 1, 10)), 0);
             const deliveryCharge = order.totals && order.totals.delivery !== undefined ? parseFloat(order.totals.delivery) : 0;
             const discount = order.totals && order.totals.discount !== undefined ? parseFloat(order.totals.discount) : 0;
@@ -1092,7 +1356,14 @@
                     activeModalOrder.items = updatedItems;
                     activeModalOrder.totals = { subtotal, delivery: deliveryCharge, discount, total: finalTotal };
 
+                    const orderInList = ordersData.find(o => o.id === activeModalOrder.id);
+                    if (orderInList) {
+                        orderInList.items = updatedItems;
+                        orderInList.totals = activeModalOrder.totals;
+                    }
+
                     renderModalItemsAndSummary(activeModalOrder);
+                    renderOrders();
                     showToast(`Removed "${item.name}". Recalculated total: ₹${finalTotal.toFixed(2)}`);
                 } catch(e) {
                     console.error("Failed to remove item:", e);
@@ -1105,10 +1376,7 @@
             if (!activeModalOrder) return;
             try {
                 const orderRef = doc(db, 'artifacts', appId, 'public', 'data', 'orders', activeModalOrder.id);
-                await updateDoc(orderRef, {
-                    status: nextStatus,
-                    updatedAt: Date.now()
-                });
+                await updateDoc(orderRef, { status: nextStatus, updatedAt: Date.now() });
                 activeModalOrder.status = nextStatus;
                 document.getElementById('modal-order-status-badge').textContent = nextStatus;
                 showToast(`Order status updated to ${nextStatus}`);
@@ -1118,60 +1386,11 @@
             }
         }
 
-        window.triggerCancelModal = function() {
-            if (!activeModalOrder) return;
-            triggerCancelModalForOrder(activeModalOrder.id);
-        }
-
-        window.triggerCancelModalForOrder = function(orderId) {
-            const order = ordersData.find(o => o.id === orderId);
-            if (!order) return;
-
-            activeModalOrder = order;
-            const modal = document.getElementById('cancel-confirm-modal');
-            const text = document.getElementById('cancel-confirm-text');
-            if (text) text.textContent = `Are you sure you want to cancel Order #${order.orderId}? This will mark status as CANCELLED while preserving order history.`;
-
-            modal.classList.remove('hidden');
-            requestAnimationFrame(() => modal.classList.remove('opacity-0'));
-        }
-
-        window.closeCancelModal = function() {
-            const modal = document.getElementById('cancel-confirm-modal');
-            modal.classList.add('opacity-0');
-            setTimeout(() => modal.classList.add('hidden'), 300);
-        }
-
-        window.executeCancelOrder = async function() {
-            if (!activeModalOrder) return;
-            try {
-                const orderRef = doc(db, 'artifacts', appId, 'public', 'data', 'orders', activeModalOrder.id);
-                await updateDoc(orderRef, {
-                    status: 'CANCELLED',
-                    cancelledAt: Date.now(),
-                    cancelledBy: 'Admin Console'
-                });
-
-                showToast(`Order #${activeModalOrder.orderId} CANCELLED successfully.`);
-                closeCancelModal();
-                if (activeModalOrder) openOrderDetailModal(activeModalOrder.id);
-            } catch(e) {
-                console.error("Cancel failed:", e);
-                showToast("Failed to cancel order.", "error");
-            }
-        }
-
-        window.openWhatsAppModal = function() {
-            if (!activeModalOrder) return;
-            openWhatsAppModalForOrder(activeModalOrder.id);
-        }
-
         window.openWhatsAppModalForOrder = function(orderId) {
             const order = ordersData.find(o => o.id === orderId);
             if (!order) return;
 
             activeModalOrder = order;
-
             const phoneInput = document.getElementById('wa-recipient-phone');
             if (phoneInput) phoneInput.value = order.customer ? order.customer.phone : '';
 
@@ -1199,7 +1418,11 @@
             items.forEach((item, idx) => {
                 const uPrice = parseFloat(item.price || 0);
                 const q = parseInt(item.qty || 1, 10);
-                msg += `${idx + 1}. ${item.name} (${q}x) - ₹${(uPrice * q).toFixed(2)}\n`;
+                if (item.isFreeGift) {
+                    msg += `${idx + 1}. 🎁 ${item.name} (${q}x) - FREE (MRP ₹${item.mrp || uPrice})\n`;
+                } else {
+                    msg += `${idx + 1}. ${item.name} (${q}x) - ₹${(uPrice * q).toFixed(2)}\n`;
+                }
             });
 
             msg += `\n-----------------------------\n`;
@@ -1252,74 +1475,75 @@
 
         window.renderAnalytics = function() {
             let totalRev = 0;
+            let todayRev = 0;
+            let monthRev = 0;
             let totalItems = 0;
+
+            const now = new Date();
+            const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+            const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+
+            const storeSalesMap = {};
+
+            restaurantsData.forEach(s => {
+                storeSalesMap[s.id] = {
+                    name: s.name,
+                    phone: s.ownerPhone || 'N/A',
+                    today: 0,
+                    month: 0,
+                    total: 0
+                };
+            });
 
             ordersData.forEach(o => {
                 if (o.status !== 'CANCELLED') {
-                    if (o.totals && o.totals.total !== undefined) totalRev += o.totals.total;
-                    (o.items || []).forEach(i => totalItems += (i.qty || 1));
+                    const orderTotal = o.totals && o.totals.total !== undefined ? o.totals.total : 0;
+                    const ts = o.timestamp || Date.now();
+
+                    totalRev += orderTotal;
+                    if (ts >= startOfToday) todayRev += orderTotal;
+                    if (ts >= startOfMonth) monthRev += orderTotal;
+
+                    (o.items || []).forEach(item => {
+                        const q = item.qty || 1;
+                        const p = item.price || 0;
+                        totalItems += q;
+
+                        const storeId = item.restaurantId || (restaurantsData[0] ? restaurantsData[0].id : 'default');
+                        if (!storeSalesMap[storeId]) {
+                            storeSalesMap[storeId] = { name: 'Local Store', phone: 'N/A', today: 0, month: 0, total: 0 };
+                        }
+
+                        const lineAmount = p * q;
+                        storeSalesMap[storeId].total += lineAmount;
+                        if (ts >= startOfToday) storeSalesMap[storeId].today += lineAmount;
+                        if (ts >= startOfMonth) storeSalesMap[storeId].month += lineAmount;
+                    });
                 }
             });
 
-            const elemRev = document.getElementById('analytics-lifetime-revenue');
-            if (elemRev) elemRev.textContent = `₹${totalRev.toFixed(2)}`;
+            document.getElementById('analytics-today-revenue').textContent = `₹${todayRev.toFixed(2)}`;
+            document.getElementById('analytics-month-revenue').textContent = `₹${monthRev.toFixed(2)}`;
+            document.getElementById('analytics-lifetime-revenue').textContent = `₹${totalRev.toFixed(2)}`;
+            document.getElementById('analytics-total-items-sold').textContent = `${totalItems} Units`;
 
-            const elemItems = document.getElementById('analytics-total-items-sold');
-            if (elemItems) elemItems.textContent = `${totalItems} Units`;
-        }
-
-        window.renderProducts = function() {
-            const grid = document.getElementById('products-grid');
-            if(!grid) return;
-            grid.innerHTML = menuData.map(p => `
-                <div class="bg-white rounded-2xl p-3 border border-gray-200/80 shadow-sm flex flex-col justify-between">
-                    <div class="w-full aspect-square bg-gray-50 rounded-xl mb-2 flex items-center justify-center overflow-hidden p-2">
-                        <img src="${p.img}" class="max-w-full max-h-full object-contain" onerror="this.src='https://placehold.co/200?text=Product'">
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-gray-900 text-xs line-clamp-1">${p.name}</h4>
-                        <div class="font-extrabold text-primary text-sm mt-1">₹${p.price}</div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        window.renderStores = function() {
-            const grid = document.getElementById('stores-grid');
-            if(!grid) return;
-            grid.innerHTML = restaurantsData.map(s => `
-                <div class="bg-white rounded-2xl p-4 border border-gray-200/80 shadow-sm flex items-center gap-4">
-                    <img src="${s.img}" class="w-14 h-14 rounded-xl object-contain bg-gray-50 p-1 border border-gray-100" onerror="this.src='https://placehold.co/100?text=Store'">
-                    <div>
-                        <h4 class="font-bold text-gray-900 text-sm">${s.name}</h4>
-                        <p class="text-xs text-gray-500 mt-0.5"><i class="fas fa-phone text-[10px] mr-1"></i> ${s.ownerPhone || 'No Phone Set'}</p>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        window.renderCategories = function() {
-            const grid = document.getElementById('categories-grid');
-            if(!grid) return;
-            grid.innerHTML = categoriesData.map(c => `
-                <div class="bg-white rounded-2xl p-3 border border-gray-200/80 shadow-sm text-center">
-                    <img src="${c.img}" class="w-12 h-12 mx-auto object-contain mb-2" onerror="this.src='https://placehold.co/100?text=Category'">
-                    <h4 class="font-bold text-gray-900 text-xs line-clamp-1">${c.name}</h4>
-                </div>
-            `).join('');
-        }
-
-        window.renderBanners = function() {
-            const grid = document.getElementById('banners-grid');
-            if(!grid) return;
-            grid.innerHTML = bannersData.map(b => `
-                <div class="bg-white rounded-2xl overflow-hidden border border-gray-200/80 shadow-sm">
-                    <img src="${b.mediaUrl}" class="w-full h-32 object-cover" onerror="this.src='https://placehold.co/600x200?text=Banner'">
-                    <div class="p-3">
-                        <h4 class="font-bold text-gray-900 text-sm">${b.title || 'Hero Banner'}</h4>
-                    </div>
-                </div>
-            `).join('');
+            const storeTable = document.getElementById('analytics-store-table-body');
+            if (storeTable) {
+                storeTable.innerHTML = Object.entries(storeSalesMap).map(([sId, data]) => `
+                    <tr class="hover:bg-gray-50/80 transition-colors">
+                        <td class="px-5 py-4 font-bold text-gray-900 text-xs">${data.name}</td>
+                        <td class="px-5 py-4 text-xs font-medium text-gray-600">${data.phone}</td>
+                        <td class="px-5 py-4 font-bold text-emerald-600">₹${data.today.toFixed(2)}</td>
+                        <td class="px-5 py-4 font-bold text-blue-600">₹${data.month.toFixed(2)}</td>
+                        <td class="px-5 py-4 font-extrabold text-primary">₹${data.total.toFixed(2)}</td>
+                        <td class="px-5 py-4 text-right">
+                            <button onclick="openStoreSalesModal('${sId}')" class="bg-primary/10 hover:bg-primary text-primary hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-all">
+                                <i class="fas fa-list-check mr-1"></i> View Sales Report
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
         }
 
         window.renderOffers = function() {
@@ -1329,14 +1553,444 @@
             const activeCount = giftOffersData.filter(o => o.enabled).length;
             if(badge) badge.textContent = `${activeCount} ACTIVE`;
 
-            grid.innerHTML = giftOffersData.map(o => `
-                <div class="bg-white rounded-2xl p-4 border border-gray-200/80 shadow-sm">
-                    <div class="flex justify-between items-start mb-2">
-                        <span class="text-[10px] font-bold px-2 py-0.5 rounded ${o.enabled ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}">${o.enabled ? 'ACTIVE' : 'DISABLED'}</span>
+            grid.innerHTML = giftOffersData.map(o => {
+                const triggerProduct = menuData.find(m => m.fbId === o.triggerProductId);
+                const freeProduct = menuData.find(m => m.fbId === o.freeProductId);
+
+                let triggerText = '';
+                if (o.type === 'PURCHASE_AMOUNT_GET_GIFT') {
+                    triggerText = `Spend ₹${o.minimumPurchaseAmount || 200}+ Subtotal`;
+                } else {
+                    triggerText = `Buy ${o.triggerQuantity || 2}x ${triggerProduct ? triggerProduct.name : 'Product'}`;
+                }
+
+                return `
+                <div class="bg-white rounded-2xl p-4 border border-gray-200/80 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded ${o.enabled ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}">${o.enabled ? 'ACTIVE' : 'DISABLED'}</span>
+                            <span class="text-[9px] font-bold bg-primary/10 text-primary px-1.5 py-0.5 rounded font-mono">${o.type === 'PURCHASE_AMOUNT_GET_GIFT' ? 'SPEND THRESHOLD' : 'QUANTITY TRIGGER'}</span>
+                        </div>
+                        <h4 class="font-bold text-gray-900 text-sm mb-1">${o.headline || 'Free Gift Campaign'}</h4>
+                        <div class="text-xs text-gray-600 bg-gray-50 p-2.5 rounded-xl border border-gray-100 space-y-1 my-2">
+                            <p><strong>Trigger:</strong> ${triggerText}</p>
+                            <p><strong>Free Gift:</strong> ${o.freeQuantity || 1}x ${freeProduct ? freeProduct.name : 'Gift Item'} (₹0)</p>
+                        </div>
                     </div>
-                    <h4 class="font-bold text-gray-900 text-sm">${o.headline || 'Free Gift Campaign'}</h4>
+                    <div class="flex gap-2 mt-2 pt-3 border-t border-gray-100">
+                        <button onclick="openOfferModal('${o.id}')" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-1.5 rounded-xl text-xs font-bold">Edit</button>
+                        <button onclick="confirmDelete('offer', '${o.id}', '${o.headline || 'Gift Offer'}')" class="bg-red-50 text-red-600 hover:bg-red-600 hover:text-white px-3 py-1.5 rounded-xl text-xs font-bold"><i class="fas fa-trash-alt"></i></button>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        window.openOfferModal = function(id = null) {
+            populateDropdowns();
+            const modal = document.getElementById('offer-modal');
+            const title = document.getElementById('offer-modal-title');
+
+            if (id) {
+                const offer = giftOffersData.find(o => o.id === id);
+                if (!offer) return;
+                title.textContent = "Edit Gift Campaign";
+                document.getElementById('om-id').value = offer.id;
+                document.getElementById('om-headline').value = offer.headline || '';
+                document.getElementById('om-type').value = offer.type || 'BUY_PRODUCT_GET_GIFT';
+                document.getElementById('om-trigger-product').value = offer.triggerProductId || '';
+                document.getElementById('om-trigger-qty').value = offer.triggerQuantity || 2;
+                document.getElementById('om-min-amount').value = offer.minimumPurchaseAmount || 200;
+                document.getElementById('om-free-product').value = offer.freeProductId || '';
+                document.getElementById('om-free-qty').value = offer.freeQuantity || 1;
+                document.getElementById('om-max-gifts').value = offer.maxGiftsPerOrder || 1;
+                document.getElementById('om-start-date').value = offer.startDate || '';
+                document.getElementById('om-end-date').value = offer.endDate || '';
+                document.getElementById('om-enabled').checked = offer.enabled !== false;
+            } else {
+                title.textContent = "Create Gift Campaign";
+                document.getElementById('om-id').value = '';
+                document.getElementById('om-headline').value = '';
+                document.getElementById('om-type').value = 'BUY_PRODUCT_GET_GIFT';
+                document.getElementById('om-trigger-qty').value = 2;
+                document.getElementById('om-min-amount').value = 200;
+                document.getElementById('om-free-qty').value = 1;
+                document.getElementById('om-max-gifts').value = 1;
+                document.getElementById('om-start-date').value = '';
+                document.getElementById('om-end-date').value = '';
+                document.getElementById('om-enabled').checked = true;
+            }
+
+            toggleCampaignTypeFields();
+            modal.classList.remove('hidden');
+            requestAnimationFrame(() => modal.classList.remove('opacity-0'));
+        }
+
+        window.toggleCampaignTypeFields = function() {
+            const type = document.getElementById('om-type').value;
+            const t1 = document.getElementById('om-type1-container');
+            const t2 = document.getElementById('om-type2-container');
+            if (type === 'PURCHASE_AMOUNT_GET_GIFT') {
+                t1.classList.add('hidden');
+                t2.classList.remove('hidden');
+            } else {
+                t1.classList.remove('hidden');
+                t2.classList.add('hidden');
+            }
+        }
+
+        window.closeOfferModal = function() {
+            const modal = document.getElementById('offer-modal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        window.handleSaveOffer = async function(e) {
+            e.preventDefault();
+            const id = document.getElementById('om-id').value;
+            const type = document.getElementById('om-type').value;
+            
+            const data = {
+                headline: document.getElementById('om-headline').value.trim(),
+                type: type,
+                triggerProductId: type === 'BUY_PRODUCT_GET_GIFT' ? document.getElementById('om-trigger-product').value : '',
+                triggerQuantity: type === 'BUY_PRODUCT_GET_GIFT' ? parseInt(document.getElementById('om-trigger-qty').value || 1, 10) : 0,
+                minimumPurchaseAmount: type === 'PURCHASE_AMOUNT_GET_GIFT' ? parseFloat(document.getElementById('om-min-amount').value || 0) : 0,
+                freeProductId: document.getElementById('om-free-product').value,
+                freeQuantity: parseInt(document.getElementById('om-free-qty').value || 1, 10),
+                maxGiftsPerOrder: parseInt(document.getElementById('om-max-gifts').value || 1, 10),
+                startDate: document.getElementById('om-start-date').value,
+                endDate: document.getElementById('om-end-date').value,
+                enabled: document.getElementById('om-enabled').checked,
+                updatedAt: Date.now()
+            };
+
+            try {
+                if (id) {
+                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'giftOffer', id), data);
+                    showToast("Gift campaign updated!");
+                } else {
+                    const docRef = doc(collection(db, 'artifacts', appId, 'public', 'data', 'giftOffer'));
+                    await setDoc(docRef, { ...data, createdAt: Date.now() });
+                    showToast("Free gift campaign created!");
+                }
+                closeOfferModal();
+            } catch(err) {
+                console.error(err);
+                showToast("Failed to save gift campaign.", "error");
+            }
+        }
+
+        window.renderProducts = function() {
+            const grid = document.getElementById('products-grid');
+            if(!grid) return;
+            grid.innerHTML = menuData.map(p => `
+                <div class="bg-white rounded-2xl p-3 border border-gray-200/80 shadow-sm flex flex-col justify-between group hover:border-primary/40 transition-all">
+                    <div class="w-full aspect-square bg-gray-50 rounded-xl mb-2 flex items-center justify-center overflow-hidden p-2 relative">
+                        <img src="${p.img}" class="max-w-full max-h-full object-contain" onerror="this.src='https://placehold.co/200?text=Product'">
+                    </div>
+                    <div>
+                        <span class="text-[9px] font-bold bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded uppercase block w-fit mb-1">${p.category || 'General'}</span>
+                        <h4 class="font-bold text-gray-900 text-xs line-clamp-1">${p.name}</h4>
+                        <div class="flex items-baseline gap-1 mt-1">
+                            <span class="font-extrabold text-primary text-sm">₹${p.price}</span>
+                            ${p.mrp ? `<span class="text-[10px] text-gray-400 line-through">₹${p.mrp}</span>` : ''}
+                        </div>
+                    </div>
+                    <div class="flex gap-1.5 mt-3 pt-2 border-t border-gray-100">
+                        <button onclick="openProductModal('${p.id}')" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-1.5 rounded-lg text-[11px] font-bold transition-colors"><i class="fas fa-edit mr-1"></i> Edit</button>
+                        <button onclick="confirmDelete('product', '${p.id}', '${p.name}')" class="bg-red-50 hover:bg-red-600 text-red-600 hover:text-white px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition-all"><i class="fas fa-trash-alt"></i></button>
+                    </div>
                 </div>
             `).join('');
+        }
+
+        window.openProductModal = function(id = null) {
+            populateDropdowns();
+            const modal = document.getElementById('product-modal');
+            const title = document.getElementById('product-modal-title');
+            
+            if (id) {
+                const item = menuData.find(m => m.id === id);
+                if (!item) return;
+                title.textContent = "Edit Product";
+                document.getElementById('pm-id').value = item.id;
+                document.getElementById('pm-name').value = item.name || '';
+                document.getElementById('pm-price').value = item.price || '';
+                document.getElementById('pm-mrp').value = item.mrp || '';
+                document.getElementById('pm-category').value = item.category || '';
+                document.getElementById('pm-store').value = item.restaurantId || '';
+                document.getElementById('pm-img').value = item.img || '';
+                document.getElementById('pm-desc').value = item.desc || '';
+            } else {
+                title.textContent = "Add New Product";
+                document.getElementById('pm-id').value = '';
+                document.getElementById('pm-name').value = '';
+                document.getElementById('pm-price').value = '';
+                document.getElementById('pm-mrp').value = '';
+                document.getElementById('pm-img').value = '';
+                document.getElementById('pm-desc').value = '';
+            }
+
+            modal.classList.remove('hidden');
+            requestAnimationFrame(() => modal.classList.remove('opacity-0'));
+        }
+
+        window.closeProductModal = function() {
+            const modal = document.getElementById('product-modal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        window.handleSaveProduct = async function(e) {
+            e.preventDefault();
+            const id = document.getElementById('pm-id').value;
+            const data = {
+                name: document.getElementById('pm-name').value.trim(),
+                price: parseFloat(document.getElementById('pm-price').value),
+                mrp: parseFloat(document.getElementById('pm-mrp').value || 0),
+                category: document.getElementById('pm-category').value,
+                restaurantId: document.getElementById('pm-store').value,
+                img: document.getElementById('pm-img').value.trim(),
+                desc: document.getElementById('pm-desc').value.trim(),
+                updatedAt: Date.now()
+            };
+
+            try {
+                if (id) {
+                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'menuItems', id), data);
+                    showToast("Product updated successfully!");
+                } else {
+                    const docRef = doc(collection(db, 'artifacts', appId, 'public', 'data', 'menuItems'));
+                    await setDoc(docRef, { ...data, createdAt: Date.now() });
+                    showToast("New product added!");
+                }
+                closeProductModal();
+            } catch(err) {
+                console.error(err);
+                showToast("Failed to save product.", "error");
+            }
+        }
+
+        window.renderCategories = function() {
+            const grid = document.getElementById('categories-grid');
+            if(!grid) return;
+            grid.innerHTML = categoriesData.map(c => `
+                <div class="bg-white rounded-2xl p-3 border border-gray-200/80 shadow-sm text-center flex flex-col justify-between">
+                    <div>
+                        <img src="${c.img}" class="w-12 h-12 mx-auto object-contain mb-2" onerror="this.src='https://placehold.co/100?text=Category'">
+                        <h4 class="font-bold text-gray-900 text-xs line-clamp-1">${c.name}</h4>
+                        <p class="text-[10px] text-gray-400 mt-0.5">${c.group || 'Categories'}</p>
+                    </div>
+                    <div class="flex gap-1.5 mt-3 pt-2 border-t border-gray-100">
+                        <button onclick="openCategoryModal('${c.id}')" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-1 rounded-lg text-[10px] font-bold">Edit</button>
+                        <button onclick="confirmDelete('category', '${c.id}', '${c.name}')" class="bg-red-50 text-red-600 hover:bg-red-600 hover:text-white px-2 py-1 rounded-lg text-[10px] font-bold"><i class="fas fa-trash-alt"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        window.openCategoryModal = function(id = null) {
+            const modal = document.getElementById('category-modal');
+            const title = document.getElementById('category-modal-title');
+
+            if (id) {
+                const cat = categoriesData.find(c => c.id === id);
+                if(!cat) return;
+                title.textContent = "Edit Category";
+                document.getElementById('cm-id').value = cat.id;
+                document.getElementById('cm-name').value = cat.name || '';
+                document.getElementById('cm-group').value = cat.group || '';
+                document.getElementById('cm-img').value = cat.img || '';
+            } else {
+                title.textContent = "Add Category";
+                document.getElementById('cm-id').value = '';
+                document.getElementById('cm-name').value = '';
+                document.getElementById('cm-group').value = '';
+                document.getElementById('cm-img').value = '';
+            }
+
+            modal.classList.remove('hidden');
+            requestAnimationFrame(() => modal.classList.remove('opacity-0'));
+        }
+
+        window.closeCategoryModal = function() {
+            const modal = document.getElementById('category-modal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        window.handleSaveCategory = async function(e) {
+            e.preventDefault();
+            const id = document.getElementById('cm-id').value;
+            const data = {
+                name: document.getElementById('cm-name').value.trim(),
+                group: document.getElementById('cm-group').value.trim() || 'Categories',
+                img: document.getElementById('cm-img').value.trim()
+            };
+
+            try {
+                if (id) {
+                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'categories', id), data);
+                    showToast("Category updated!");
+                } else {
+                    const docRef = doc(collection(db, 'artifacts', appId, 'public', 'data', 'categories'));
+                    await setDoc(docRef, data);
+                    showToast("Category added!");
+                }
+                closeCategoryModal();
+            } catch(err) {
+                console.error(err);
+                showToast("Failed to save category.", "error");
+            }
+        }
+
+        window.renderStores = function() {
+            const grid = document.getElementById('stores-grid');
+            if(!grid) return;
+            grid.innerHTML = restaurantsData.map(s => `
+                <div class="bg-white rounded-2xl p-4 border border-gray-200/80 shadow-sm flex items-center justify-between gap-4">
+                    <div class="flex items-center gap-3 overflow-hidden">
+                        <img src="${s.img}" class="w-14 h-14 rounded-xl object-contain bg-gray-50 p-1 border border-gray-100 shrink-0" onerror="this.src='https://placehold.co/100?text=Store'">
+                        <div class="truncate">
+                            <h4 class="font-bold text-gray-900 text-sm truncate">${s.name}</h4>
+                            <p class="text-xs text-gray-500 mt-0.5"><i class="fas fa-phone text-[10px] mr-1"></i> ${s.ownerPhone || 'No Phone Set'}</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-1.5 shrink-0">
+                        <button onclick="openStoreModal('${s.id}')" class="bg-gray-100 hover:bg-gray-200 text-gray-700 p-2 rounded-xl text-xs font-bold"><i class="fas fa-edit"></i></button>
+                        <button onclick="confirmDelete('store', '${s.id}', '${s.name}')" class="bg-red-50 text-red-600 hover:bg-red-600 hover:text-white p-2 rounded-xl text-xs font-bold"><i class="fas fa-trash-alt"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        window.openStoreModal = function(id = null) {
+            const modal = document.getElementById('store-modal');
+            const title = document.getElementById('store-modal-title');
+
+            if (id) {
+                const store = restaurantsData.find(s => s.id === id);
+                if (!store) return;
+                title.textContent = "Edit Partner Store";
+                document.getElementById('sm-id').value = store.id;
+                document.getElementById('sm-name').value = store.name || '';
+                document.getElementById('sm-phone').value = store.ownerPhone || '';
+                document.getElementById('sm-img').value = store.img || '';
+            } else {
+                title.textContent = "Add Partner Store";
+                document.getElementById('sm-id').value = '';
+                document.getElementById('sm-name').value = '';
+                document.getElementById('sm-phone').value = '';
+                document.getElementById('sm-img').value = '';
+            }
+
+            modal.classList.remove('hidden');
+            requestAnimationFrame(() => modal.classList.remove('opacity-0'));
+        }
+
+        window.closeStoreModal = function() {
+            const modal = document.getElementById('store-modal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        window.handleSaveStore = async function(e) {
+            e.preventDefault();
+            const id = document.getElementById('sm-id').value;
+            const data = {
+                name: document.getElementById('sm-name').value.trim(),
+                ownerPhone: document.getElementById('sm-phone').value.trim(),
+                img: document.getElementById('sm-img').value.trim()
+            };
+
+            try {
+                if (id) {
+                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'restaurants', id), data);
+                    showToast("Partner store updated!");
+                } else {
+                    const docRef = doc(collection(db, 'artifacts', appId, 'public', 'data', 'restaurants'));
+                    await setDoc(docRef, data);
+                    showToast("Partner store added!");
+                }
+                closeStoreModal();
+            } catch(err) {
+                console.error(err);
+                showToast("Failed to save store.", "error");
+            }
+        }
+
+        window.renderBanners = function() {
+            const grid = document.getElementById('banners-grid');
+            if(!grid) return;
+            grid.innerHTML = bannersData.map(b => `
+                <div class="bg-white rounded-2xl overflow-hidden border border-gray-200/80 shadow-sm flex flex-col justify-between">
+                    <img src="${b.mediaUrl || b.img}" class="w-full h-32 object-cover" onerror="this.src='https://placehold.co/600x200?text=Banner'">
+                    <div class="p-3">
+                        <h4 class="font-bold text-gray-900 text-sm">${b.title || 'Hero Banner'}</h4>
+                        <p class="text-xs text-gray-500 mt-0.5">${b.subtitle || ''}</p>
+                    </div>
+                    <div class="p-3 pt-0 flex gap-1.5 border-t border-gray-100 mt-2">
+                        <button onclick="openBannerModal('${b.id}')" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-1.5 rounded-xl text-xs font-bold">Edit Banner</button>
+                        <button onclick="confirmDelete('banner', '${b.id}', '${b.title || 'Banner'}')" class="bg-red-50 text-red-600 hover:bg-red-600 hover:text-white px-3 py-1.5 rounded-xl text-xs font-bold"><i class="fas fa-trash-alt"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        window.openBannerModal = function(id = null) {
+            const modal = document.getElementById('banner-modal');
+            const title = document.getElementById('banner-modal-title');
+
+            if (id) {
+                const banner = bannersData.find(b => b.id === id);
+                if (!banner) return;
+                title.textContent = "Edit Hero Banner";
+                document.getElementById('bm-id').value = banner.id;
+                document.getElementById('bm-title').value = banner.title || '';
+                document.getElementById('bm-subtitle').value = banner.subtitle || '';
+                document.getElementById('bm-img').value = banner.mediaUrl || banner.img || '';
+            } else {
+                title.textContent = "Add Hero Banner";
+                document.getElementById('bm-id').value = '';
+                document.getElementById('bm-title').value = '';
+                document.getElementById('bm-subtitle').value = '';
+                document.getElementById('bm-img').value = '';
+            }
+
+            modal.classList.remove('hidden');
+            requestAnimationFrame(() => modal.classList.remove('opacity-0'));
+        }
+
+        window.closeBannerModal = function() {
+            const modal = document.getElementById('banner-modal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        window.handleSaveBanner = async function(e) {
+            e.preventDefault();
+            const id = document.getElementById('bm-id').value;
+            const data = {
+                title: document.getElementById('bm-title').value.trim(),
+                subtitle: document.getElementById('bm-subtitle').value.trim(),
+                mediaUrl: document.getElementById('bm-img').value.trim()
+            };
+
+            try {
+                if (id) {
+                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'banners', id), data);
+                    showToast("Banner updated!");
+                } else {
+                    const docRef = doc(collection(db, 'artifacts', appId, 'public', 'data', 'banners'));
+                    await setDoc(docRef, data);
+                    showToast("Hero banner added!");
+                }
+                closeBannerModal();
+            } catch(err) {
+                console.error(err);
+                showToast("Failed to save banner.", "error");
+            }
         }
 
         window.renderRiders = function() {
@@ -1346,11 +2000,82 @@
             if(badge) badge.textContent = ridersData.length;
 
             grid.innerHTML = ridersData.map(r => `
-                <div class="bg-white rounded-2xl p-4 border border-gray-200/80 shadow-sm">
-                    <h4 class="font-bold text-gray-900 text-sm">${r.name || 'Delivery Partner'}</h4>
-                    <p class="text-xs text-gray-500 mt-0.5">${r.phone || 'No Mobile'}</p>
+                <div class="bg-white rounded-2xl p-4 border border-gray-200/80 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <h4 class="font-bold text-gray-900 text-sm">${r.name || 'Delivery Partner'}</h4>
+                        <p class="text-xs text-gray-500 mt-0.5"><i class="fas fa-phone text-[10px] mr-1"></i> ${r.phone || 'No Mobile'}</p>
+                    </div>
+                    <div class="flex gap-2 mt-4 pt-3 border-t border-gray-100">
+                        <button onclick="openRiderModal('${r.id}')" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-1.5 rounded-xl text-xs font-bold">Edit</button>
+                        <button onclick="confirmDelete('rider', '${r.id}', '${r.name || 'Rider'}')" class="bg-red-50 text-red-600 hover:bg-red-600 hover:text-white px-3 py-1.5 rounded-xl text-xs font-bold"><i class="fas fa-trash-alt"></i></button>
+                    </div>
                 </div>
             `).join('');
+        }
+
+        window.openRiderModal = function(id = null) {
+            const modal = document.getElementById('rider-modal');
+            const title = document.getElementById('rider-modal-title');
+
+            if (id) {
+                const rider = ridersData.find(r => r.id === id);
+                if (!rider) return;
+                title.textContent = "Edit Delivery Partner";
+                document.getElementById('rm-id').value = rider.id;
+                document.getElementById('rm-name').value = rider.name || '';
+                document.getElementById('rm-phone').value = rider.phone || '';
+                document.getElementById('rm-password').value = rider.password || '';
+            } else {
+                title.textContent = "Add Delivery Partner";
+                document.getElementById('rm-id').value = '';
+                document.getElementById('rm-name').value = '';
+                document.getElementById('rm-phone').value = '';
+                document.getElementById('rm-password').value = '';
+            }
+
+            modal.classList.remove('hidden');
+            requestAnimationFrame(() => modal.classList.remove('opacity-0'));
+        }
+
+        window.closeRiderModal = function() {
+            const modal = document.getElementById('rider-modal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        window.handleSaveRider = async function(e) {
+            e.preventDefault();
+            const id = document.getElementById('rm-id').value;
+            const data = {
+                name: document.getElementById('rm-name').value.trim(),
+                phone: document.getElementById('rm-phone').value.trim(),
+                password: document.getElementById('rm-password').value.trim()
+            };
+
+            try {
+                if (id) {
+                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'deliveryPartners', id), data);
+                    showToast("Delivery partner updated!");
+                } else {
+                    const docRef = doc(collection(db, 'artifacts', appId, 'public', 'data', 'deliveryPartners'));
+                    await setDoc(docRef, data);
+                    showToast("Delivery partner added!");
+                }
+                closeRiderModal();
+            } catch(err) {
+                console.error(err);
+                showToast("Failed to save delivery partner.", "error");
+            }
+        }
+
+        window.confirmDelete = function(type, id, title) {
+            pendingDeleteConfig = { type, id };
+            const text = document.getElementById('delete-confirm-text');
+            if (text) text.textContent = `Are you sure you want to delete "${title}"? This action cannot be undone.`;
+
+            const modal = document.getElementById('delete-confirm-modal');
+            modal.classList.remove('hidden');
+            requestAnimationFrame(() => modal.classList.remove('opacity-0'));
         }
 
         window.closeDeleteModal = function() {
@@ -1371,10 +2096,13 @@
                 if (type === 'product') collectionName = 'menuItems';
                 else if (type === 'store') collectionName = 'restaurants';
                 else if (type === 'category') collectionName = 'categories';
+                else if (type === 'banner') collectionName = 'banners';
+                else if (type === 'offer') collectionName = 'giftOffer';
+                else if (type === 'rider') collectionName = 'deliveryPartners';
 
                 if (collectionName) {
                     await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', collectionName, id));
-                    showToast("Record deleted successfully.");
+                    showToast("Item deleted successfully.");
                 }
             } catch(e) {
                 console.error("Delete error:", e);
