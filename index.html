@@ -9,7 +9,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Leaflet CSS for Real-time Delivery Maps -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 
     <script>
@@ -60,7 +59,6 @@
     <!-- Toast Notification Container -->
     <div id="toast-container" class="fixed top-20 left-1/2 -translate-x-1/2 z-[999] flex flex-col gap-2 pointer-events-none w-full max-w-sm px-4"></div>
 
-    <!-- Global Real-Time Store Status Banner -->
     <div id="store-status-banner" class="fixed top-16 left-0 w-full z-40 bg-emerald-600 text-white px-4 py-2 text-xs sm:text-sm font-bold flex items-center justify-between shadow-md transition-colors duration-300">
         <div class="flex items-center gap-2 max-w-7xl mx-auto w-full justify-between">
             <div class="flex items-center gap-2">
@@ -73,29 +71,33 @@
         </div>
     </div>
 
-    <!-- Mobile Bottom Navigation Bar -->
     <div class="fixed bottom-0 w-full bg-white border-t border-gray-200 z-40 sm:hidden pb-safe shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
         <div class="flex justify-around items-center h-16">
             <button onclick="goHome()" class="flex flex-col items-center justify-center w-full h-full text-gray-500 hover:text-primary transition-colors">
-                <i class="fas fa-home text-xl mb-1"></i>
+                <i class="fas fa-home text-lg mb-0.5"></i>
                 <span class="text-[10px] font-bold">Home</span>
             </button>
             <button onclick="switchView('restaurants')" class="flex flex-col items-center justify-center w-full h-full text-gray-500 hover:text-primary transition-colors">
-                <i class="fas fa-store text-xl mb-1"></i>
+                <i class="fas fa-store text-lg mb-0.5"></i>
                 <span class="text-[10px] font-bold">Stores</span>
             </button>
-            <button onclick="handleProfileClick(); setProfileTab('orders');" class="flex flex-col items-center justify-center w-full h-full text-gray-500 hover:text-primary transition-colors">
-                <i class="fas fa-receipt text-xl mb-1"></i>
-                <span class="text-[10px] font-bold">Orders</span>
+            <button onclick="switchView('offers')" class="flex flex-col items-center justify-center w-full h-full text-amber-600 hover:text-amber-700 transition-colors relative">
+                <i class="fas fa-gift text-lg mb-0.5"></i>
+                <span class="text-[10px] font-extrabold">Free Gifts</span>
+                <span class="absolute top-2 right-4 w-2 h-2 rounded-full bg-amber-500 animate-ping"></span>
+            </button>
+            <button onclick="toggleCart()" class="flex flex-col items-center justify-center w-full h-full text-gray-500 hover:text-primary transition-colors relative">
+                <i class="fas fa-shopping-cart text-lg mb-0.5"></i>
+                <span class="text-[10px] font-bold">Cart</span>
+                <span id="mob-cart-badge" class="absolute top-1.5 right-4 bg-primary text-white text-[9px] font-bold w-4 h-4 flex items-center justify-center rounded-full scale-0 transition-transform">0</span>
             </button>
             <button onclick="handleProfileClick()" class="flex flex-col items-center justify-center w-full h-full text-gray-500 hover:text-primary transition-colors">
-                <i class="fas fa-user text-xl mb-1"></i>
+                <i class="fas fa-user text-lg mb-0.5"></i>
                 <span id="mob-nav-profile-text" class="text-[10px] font-bold">Profile</span>
             </button>
         </div>
     </div>
 
-    <!-- Authentication Modal -->
     <div id="auth-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8 border border-gray-100 transform scale-95 transition-transform duration-300 relative" id="auth-modal-content">
             <button onclick="closeAuthModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:text-gray-900 transition-colors"><i class="fas fa-times"></i></button>
@@ -146,12 +148,10 @@
         </div>
     </div>
 
-    <!-- Header Navigation -->
     <nav class="fixed w-full top-0 z-50 bg-secondary shadow-sm transition-all duration-300 border-none">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center gap-2 sm:gap-4">
-                    <!-- Step-by-Step Back Navigation Button -->
                     <button onclick="handleBackNavigation()" class="w-8 h-8 flex items-center justify-center text-gray-900 hover:bg-black/10 rounded-full transition-colors" title="Go Back Step-by-Step">
                         <i class="fas fa-arrow-left"></i>
                     </button>
@@ -165,7 +165,6 @@
                     </div>
                 </div>
 
-                <!-- Delivery Address Quick Selector in Header -->
                 <div class="flex-1 max-w-xs mx-3 hidden md:flex items-center gap-2 bg-white/60 hover:bg-white p-2 rounded-xl border border-black/10 cursor-pointer transition-colors" onclick="openLocationModal()">
                     <i class="fas fa-location-dot text-red-500 text-sm"></i>
                     <div class="truncate text-xs">
@@ -175,6 +174,10 @@
                 </div>
 
                 <div class="flex items-center gap-2 sm:gap-4">
+                    <button onclick="switchView('offers')" class="hidden sm:flex items-center gap-1.5 bg-amber-400 hover:bg-amber-500 text-gray-900 px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all shadow-sm">
+                        <i class="fas fa-gift text-amber-900"></i> Free Gifts
+                    </button>
+
                     <button id="nav-login-btn" onclick="openAuthModal()" class="bg-black text-white hover:bg-gray-800 transition-colors px-4 py-2 rounded-xl text-sm font-bold shadow-sm">
                         Login
                     </button>
@@ -193,9 +196,9 @@
         </div>
     </nav>
 
-    <!-- Main Home View -->
     <main id="view-home" class="pt-28 sm:pt-32 pb-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-screen">
         
+        <!-- Active Store Filter Notice Banner -->
         <div id="active-restaurant-banner" class="hidden bg-primary/10 border border-primary/20 rounded-2xl p-4 mb-4 flex items-center justify-between shadow-sm">
             <div class="flex items-center gap-3 overflow-hidden">
                 <div class="w-12 h-12 rounded-full overflow-hidden border-2 border-white shadow-sm flex items-center justify-center bg-white shrink-0">
@@ -203,11 +206,11 @@
                 </div>
                 <div class="truncate">
                     <h3 class="font-bold text-gray-900 truncate" id="active-rest-name">Store Name</h3>
-                    <p class="text-xs text-gray-500">Showing products from this store</p>
+                    <p class="text-xs text-gray-500">Showing products exclusively from this store</p>
                 </div>
             </div>
             <button onclick="goHome()" class="text-xs sm:text-sm font-semibold text-primary hover:text-primaryDark bg-white px-3 py-2 sm:px-4 sm:py-2 rounded-xl shadow-sm border border-gray-100 transition-colors shrink-0 ml-2">
-                View All Catalog
+                View All Stores Catalog
             </button>
         </div>
 
@@ -245,11 +248,10 @@
         </div>
     </main>
 
-    <!-- Partner Stores View -->
     <main id="view-restaurants" class="hidden pt-28 sm:pt-32 pb-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-screen">
         <div class="mb-8">
-            <h1 class="text-3xl font-heading font-extrabold text-gray-900 mb-2">Top Partner Stores</h1>
-            <p class="text-gray-500">Discover fresh groceries and essentials from verified local stores in Mahabubabad.</p>
+            <h1 class="text-2xl sm:text-3xl font-heading font-extrabold text-gray-900 mb-2">Partner Stores in Mahabubabad</h1>
+            <p class="text-gray-500 text-xs sm:text-sm">Select a verified local store to browse their inventory and order directly.</p>
         </div>
         
         <div id="restaurants-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
@@ -259,10 +261,32 @@
                 <i class="fas fa-store-slash"></i>
             </div>
             <h3 class="text-2xl font-heading font-bold text-gray-900">No Stores Available</h3>
+            <p class="text-gray-500 text-xs mt-2">Check back soon as new stores join LocalZip!</p>
         </div>
     </main>
 
-    <!-- Comprehensive Upgraded User Profile Dashboard -->
+    <main id="view-offers" class="hidden pt-28 sm:pt-32 pb-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-screen">
+        <div class="mb-6 sm:mb-8 bg-gradient-to-r from-amber-500 to-amber-600 text-white p-6 rounded-3xl shadow-lg relative overflow-hidden">
+            <div class="relative z-10 max-w-2xl">
+                <span class="bg-black/30 text-amber-200 text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider inline-block mb-2">🎁 FREE GIFT DISCOVERY</span>
+                <h1 class="text-2xl sm:text-4xl font-heading font-extrabold text-white mb-2">Active Free Gift Campaigns</h1>
+                <p class="text-xs sm:text-sm text-amber-100">Meet campaign conditions and get 100% FREE gift products automatically added to your cart at ₹0!</p>
+            </div>
+            <i class="fas fa-gift absolute -right-6 -bottom-6 text-9xl text-white/10 transform -rotate-12"></i>
+        </div>
+
+        <div id="free-gift-campaigns-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+
+        <div id="empty-offers-state" class="hidden flex-col items-center justify-center py-20 px-4 text-center bg-white rounded-3xl border border-gray-100 shadow-sm">
+            <div class="w-20 h-20 bg-amber-50 rounded-full flex items-center justify-center text-amber-500 text-3xl mb-4">
+                <i class="fas fa-gift"></i>
+            </div>
+            <h3 class="text-xl font-heading font-bold text-gray-900">No Active Free Gift Offers Right Now</h3>
+            <p class="text-gray-500 mt-1 text-xs max-w-md">New free gift campaigns will appear here soon. Stay tuned!</p>
+            <button onclick="goHome()" class="mt-4 bg-primary text-white px-6 py-2.5 rounded-xl text-xs font-bold shadow-md hover:bg-primaryDark transition-colors">Browse Catalog</button>
+        </div>
+    </main>
+
     <main id="view-profile" class="hidden pt-28 sm:pt-32 pb-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 min-h-screen">
         
         <!-- Profile Header Card -->
@@ -368,6 +392,9 @@
 
                 <div class="flex justify-between items-center mb-4">
                     <div>
+                        <div class="text-xs text-amber-300 font-bold mb-0.5 flex items-center gap-1.5">
+                            <i class="fas fa-store"></i> <span id="active-spotlight-store">Store: LocalZip Hub</span>
+                        </div>
                         <h4 id="active-spotlight-id" class="font-heading font-extrabold text-xl text-white">Order #ORD-000000</h4>
                         <p id="active-spotlight-details" class="text-xs text-gray-300 mt-0.5">3 Items • Total: ₹490.00</p>
                     </div>
@@ -425,7 +452,7 @@
                 <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white p-5 rounded-2xl shadow-sm relative overflow-hidden">
                     <span class="text-[10px] font-extrabold bg-black/30 px-2 py-0.5 rounded uppercase">BUY OFFER GET FREE</span>
                     <h4 class="font-extrabold text-lg mt-2">Free Bonus Gifts & Products</h4>
-                    <p class="text-xs text-emerald-100 mt-1">Buy qualifying offer products (like 2 Cokes or ₹200+ cart value) to unlock 100% free gift items!</p>
+                    <p class="text-xs text-emerald-100 mt-1">Buy qualifying offer products or meet minimum order value to unlock 100% free gift items!</p>
                 </div>
             </div>
         </div>
@@ -725,6 +752,7 @@
                         <span class="font-bold text-gray-400 uppercase text-[10px] block mb-1">Deliver To</span>
                         <h5 id="modal-customer-name" class="font-bold text-gray-900 text-sm">Customer Name</h5>
                         <p id="modal-customer-phone" class="text-primary font-bold mt-0.5">+91 0000000000</p>
+                        <p id="modal-customer-store" class="text-[11px] font-bold text-amber-600 mt-1"><i class="fas fa-store"></i> Store: LocalZip Center</p>
                     </div>
                     <div class="sm:text-right">
                         <span class="font-bold text-gray-400 uppercase text-[10px] block mb-1">Address</span>
@@ -914,6 +942,7 @@
         let restaurantsData = [];
         let categoriesData = [];
         let bannersData = [];
+        let giftOffersData = [];
         let ridersData = [];
         let cartData = [];
         let userOrders = [];
@@ -923,6 +952,7 @@
 
         let trackingMapInstance = null;
         let trackingMarker = null;
+        let trackingPolyline = null;
         let activeTrackingUnsubscribe = null;
 
         let state = {
@@ -963,7 +993,21 @@
             state.searchQuery = '';
             const searchInput = document.getElementById('search-input');
             if (searchInput) searchInput.value = '';
+            document.getElementById('active-restaurant-banner')?.classList.add('hidden');
             switchView('home');
+        }
+
+        window.selectStoreFilter = function(storeId) {
+            const store = restaurantsData.find(s => s.id === storeId);
+            if (!store) return;
+
+            state.activeRestaurant = store;
+            document.getElementById('active-rest-name').textContent = store.name;
+            document.getElementById('active-rest-img').src = store.img || 'https://placehold.co/100?text=Store';
+            document.getElementById('active-restaurant-banner').classList.remove('hidden');
+
+            switchView('home');
+            showToast(`Filtering items from "${store.name}"`);
         }
 
         // STEP-BY-STEP BACK NAVIGATION
@@ -990,6 +1034,11 @@
 
             if (state.activeCategory !== 'All') {
                 setCategory('All');
+                return;
+            }
+
+            if (state.activeRestaurant) {
+                goHome();
                 return;
             }
 
@@ -1020,7 +1069,7 @@
                 mrpContainer.classList.add('hidden');
             }
 
-            const inCart = cartData.find(c => c.fbId === item.fbId);
+            const inCart = cartData.find(c => c.fbId === item.fbId && !c.isFreeGift);
             const qty = inCart ? inCart.qty : 0;
             const actionContainer = document.getElementById('pm-action');
 
@@ -1074,7 +1123,7 @@
         window.switchView = function(viewName) {
             state.view = viewName;
             window.scrollTo(0, 0);
-            ['home', 'restaurants', 'checkout', 'success', 'profile'].forEach(v => {
+            ['home', 'restaurants', 'offers', 'checkout', 'success', 'profile'].forEach(v => {
                 const el = document.getElementById(`view-${v}`);
                 if (el) el.classList.toggle('hidden', v !== viewName);
             });
@@ -1082,6 +1131,7 @@
             updateCartUI();
             if (viewName === 'home') renderCategoriesAndMenu();
             if (viewName === 'restaurants') renderRestaurants();
+            if (viewName === 'offers') renderOffersDiscoveryPage();
             if (viewName === 'profile') renderProfile();
         }
 
@@ -1187,7 +1237,7 @@
 
             // Stores
             onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'restaurants'), (snapshot) => {
-                restaurantsData = snapshot.docs.map(d => ({ fbId: d.id, ...d.data() }));
+                restaurantsData = snapshot.docs.map(d => ({ id: d.id, fbId: d.id, ...d.data() }));
                 if (state.view === 'restaurants') renderRestaurants();
             });
 
@@ -1205,6 +1255,13 @@
             }, () => {
                 bannersData = getDefaultBanners();
                 initBannerSlider();
+            });
+
+            // Free Gift Campaigns
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'giftOffer'), (snapshot) => {
+                giftOffersData = snapshot.docs.map(d => ({ id: d.id, fbId: d.id, ...d.data() }));
+                evaluateFreeGiftsInCart();
+                if (state.view === 'offers') renderOffersDiscoveryPage();
             });
 
             // Delivery Partners
@@ -1238,12 +1295,12 @@
             });
         }
 
-        // CART LOGIC ENGINE
+        // CART LOGIC & AUTOMATIC FREE GIFT EVALUATOR
         window.addToCart = function(fbId) {
             const item = menuData.find(m => m.fbId === fbId) || getDefaultFallbackItems().find(m => m.fbId === fbId);
             if (!item) return;
 
-            const existing = cartData.find(c => c.fbId === fbId);
+            const existing = cartData.find(c => c.fbId === fbId && !c.isFreeGift);
             if (existing) {
                 existing.qty += 1;
             } else {
@@ -1253,17 +1310,20 @@
                     price: item.price,
                     mrp: item.mrp || item.price,
                     category: item.category || 'General',
+                    restaurantId: item.restaurantId || '',
                     img: item.img,
-                    qty: 1
+                    qty: 1,
+                    isFreeGift: false
                 });
             }
+            evaluateFreeGiftsInCart();
             updateCartUI();
             renderMenu();
             showToast(`Added "${item.name}" to cart`);
         }
 
         window.updateQty = function(fbId, delta) {
-            const idx = cartData.findIndex(c => c.fbId === fbId);
+            const idx = cartData.findIndex(c => c.fbId === fbId && !c.isFreeGift);
             if (idx !== -1) {
                 cartData[idx].qty += delta;
                 if (cartData[idx].qty <= 0) {
@@ -1273,8 +1333,50 @@
                 addToCart(fbId);
                 return;
             }
+            evaluateFreeGiftsInCart();
             updateCartUI();
             renderMenu();
+        }
+
+        function evaluateFreeGiftsInCart() {
+            // Filter out existing auto-added free gifts first
+            cartData = cartData.filter(c => !c.isFreeGift);
+
+            const normalSubtotal = cartData.reduce((s, i) => s + (i.price * i.qty), 0);
+            const activeCampaigns = giftOffersData.filter(g => g.enabled !== false);
+
+            activeCampaigns.forEach(campaign => {
+                let qualifies = false;
+                let freeQty = campaign.freeQuantity || 1;
+
+                if (campaign.type === 'PURCHASE_AMOUNT_GET_GIFT') {
+                    if (normalSubtotal >= (campaign.minimumPurchaseAmount || 200)) {
+                        qualifies = true;
+                    }
+                } else { // BUY_PRODUCT_GET_GIFT
+                    const triggerInCart = cartData.find(c => c.fbId === campaign.triggerProductId && !c.isFreeGift);
+                    if (triggerInCart && triggerInCart.qty >= (campaign.triggerQuantity || 2)) {
+                        qualifies = true;
+                    }
+                }
+
+                if (qualifies && campaign.freeProductId) {
+                    const freeItem = menuData.find(m => m.fbId === campaign.freeProductId) || getDefaultFallbackItems().find(m => m.fbId === campaign.freeProductId);
+                    if (freeItem) {
+                        cartData.push({
+                            fbId: freeItem.fbId,
+                            name: freeItem.name,
+                            price: 0,
+                            mrp: freeItem.mrp || freeItem.price,
+                            category: freeItem.category || 'Free Gift',
+                            img: freeItem.img,
+                            qty: freeQty,
+                            isFreeGift: true,
+                            campaignHeadline: campaign.headline || 'Free Gift Offer'
+                        });
+                    }
+                }
+            });
         }
 
         function calculateCartTotals() {
@@ -1341,7 +1443,7 @@
         }
 
         window.createCardHTML = function(item, isHorizontal = false) {
-            const inCart = cartData.find(c => c.fbId === item.fbId);
+            const inCart = cartData.find(c => c.fbId === item.fbId && !c.isFreeGift);
             const qty = inCart ? inCart.qty : 0;
             const widthClass = isHorizontal ? "w-[160px] sm:w-[190px] flex-shrink-0 snap-start" : "w-full";
             
@@ -1387,6 +1489,7 @@
             const emptyState = document.getElementById('empty-menu-state');
             let filtered = menuData;
 
+            if (state.activeRestaurant) filtered = filtered.filter(i => i.restaurantId === state.activeRestaurant.id);
             if (state.activeCategory !== 'All') filtered = filtered.filter(i => i.category === state.activeCategory);
             if (state.searchQuery) filtered = filtered.filter(i => i.name.toLowerCase().includes(state.searchQuery));
 
@@ -1400,7 +1503,7 @@
             emptyState.classList.add('hidden');
             emptyState.classList.remove('flex');
 
-            if (state.activeCategory === 'All' && !state.searchQuery) {
+            if (state.activeCategory === 'All' && !state.searchQuery && !state.activeRestaurant) {
                 const categoriesMap = {};
                 filtered.forEach(item => {
                     const cat = item.category || 'Essential Items';
@@ -1426,6 +1529,127 @@
                 container.className = "grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-6";
                 container.innerHTML = filtered.map(i => createCardHTML(i, false)).join('');
             }
+        }
+
+        window.renderRestaurants = function() {
+            const grid = document.getElementById('restaurants-grid');
+            const emptyState = document.getElementById('empty-restaurants-state');
+
+            if (!grid) return;
+
+            if (restaurantsData.length === 0) {
+                grid.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                emptyState.classList.add('flex');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            emptyState.classList.remove('flex');
+
+            grid.innerHTML = restaurantsData.map(store => `
+                <div class="bg-white rounded-3xl p-5 shadow-sm border border-gray-200/80 hover:shadow-md transition-shadow flex flex-col justify-between group">
+                    <div>
+                        <div class="w-full aspect-[16/9] rounded-2xl overflow-hidden bg-gray-50 border border-gray-100 p-2 mb-4 flex items-center justify-center relative">
+                            <img src="${store.img}" class="max-w-full max-h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-300" onerror="this.src='https://placehold.co/300x180?text=Store'">
+                            <span class="absolute top-2 right-2 bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> 🟢 OPEN
+                            </span>
+                        </div>
+                        <h3 class="font-heading font-extrabold text-lg text-gray-900 mb-1">${store.name}</h3>
+                        <p class="text-xs text-gray-500 flex items-center gap-1 mb-4">
+                            <i class="fas fa-map-marker-alt text-red-500"></i> Mahabubabad Local Market
+                        </p>
+                    </div>
+                    <button onclick="selectStoreFilter('${store.id}')" class="w-full bg-primary hover:bg-primaryDark text-white py-3 rounded-xl font-bold text-xs transition-all shadow-md flex justify-center items-center gap-2">
+                        <span>VIEW STORE CATALOG</span> <i class="fas fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        window.renderOffersDiscoveryPage = function() {
+            const grid = document.getElementById('free-gift-campaigns-grid');
+            const emptyState = document.getElementById('empty-offers-state');
+
+            if (!grid) return;
+
+            const activeCampaigns = giftOffersData.filter(g => g.enabled !== false);
+
+            if (activeCampaigns.length === 0) {
+                grid.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                emptyState.classList.add('flex');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            emptyState.classList.remove('flex');
+
+            grid.innerHTML = activeCampaigns.map(offer => {
+                const triggerProduct = menuData.find(m => m.fbId === offer.triggerProductId);
+                const freeProduct = menuData.find(m => m.fbId === offer.freeProductId);
+
+                const freeImg = freeProduct ? freeProduct.img : 'https://placehold.co/150?text=Free+Gift';
+                const freeName = freeProduct ? freeProduct.name : 'Free Gift Item';
+                const freeMrp = freeProduct ? (freeProduct.mrp || freeProduct.price) : 20;
+
+                let conditionHTML = '';
+                if (offer.type === 'PURCHASE_AMOUNT_GET_GIFT') {
+                    conditionHTML = `
+                        <div class="flex items-center gap-3 bg-amber-50 border border-amber-200 p-3 rounded-2xl mb-3">
+                            <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-lg shrink-0">₹</div>
+                            <div>
+                                <p class="text-xs font-bold text-gray-900">Spend Minimum ₹${offer.minimumPurchaseAmount || 200}</p>
+                                <p class="text-[11px] text-gray-500">Product subtotal threshold requirement</p>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    const triggerImg = triggerProduct ? triggerProduct.img : 'https://placehold.co/150?text=Product';
+                    const triggerName = triggerProduct ? triggerProduct.name : 'Required Product';
+                    conditionHTML = `
+                        <div class="flex items-center gap-3 bg-emerald-50 border border-emerald-200 p-3 rounded-2xl mb-3">
+                            <img src="${triggerImg}" class="w-12 h-12 rounded-xl object-contain bg-white p-1 border border-emerald-100 shrink-0" onerror="this.src='https://placehold.co/100?text=Product'">
+                            <div>
+                                <p class="text-xs font-bold text-gray-900">Buy ${offer.triggerQuantity || 2}× ${triggerName}</p>
+                                <p class="text-[11px] text-gray-500">Unit quantity trigger</p>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                return `
+                <div class="bg-white rounded-3xl p-5 border border-gray-200/80 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+                    <div>
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-[10px] font-extrabold bg-amber-100 text-amber-900 px-2.5 py-1 rounded-full uppercase">🎁 FREE GIFT OFFER</span>
+                            <span class="text-[10px] font-bold text-gray-400 font-mono">ACTIVE</span>
+                        </div>
+
+                        <h3 class="font-heading font-extrabold text-base text-gray-900 mb-3">${offer.headline || 'Free Gift Campaign'}</h3>
+
+                        ${conditionHTML}
+
+                        <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white p-3.5 rounded-2xl flex items-center justify-between gap-3 shadow-sm">
+                            <div class="flex items-center gap-3">
+                                <img src="${freeImg}" class="w-12 h-12 rounded-xl object-contain bg-white p-1 border border-white/20 shrink-0" onerror="this.src='https://placehold.co/100?text=Gift'">
+                                <div>
+                                    <span class="bg-black/30 text-emerald-200 text-[9px] font-bold px-1.5 py-0.5 rounded uppercase">GET FREE</span>
+                                    <h4 class="font-bold text-xs text-white mt-0.5 line-clamp-1">${offer.freeQuantity || 1}× ${freeName}</h4>
+                                    <p class="text-[10px] text-emerald-200 line-through">MRP ₹${freeMrp}</p>
+                                </div>
+                            </div>
+                            <span class="text-xs font-extrabold bg-white text-emerald-800 px-2.5 py-1 rounded-lg shrink-0">100% FREE</span>
+                        </div>
+                    </div>
+
+                    <button onclick="goHome()" class="w-full bg-gray-900 hover:bg-black text-white py-3 rounded-xl font-bold text-xs transition-colors mt-4 flex items-center justify-center gap-2">
+                        <i class="fas fa-shopping-bag"></i> SHOP QUALIFYING ITEMS
+                    </button>
+                </div>
+                `;
+            }).join('');
         }
 
         function initBannerSlider() {
@@ -1499,9 +1723,15 @@
         function updateCartUI() {
             const count = cartData.reduce((sum, item) => sum + item.qty, 0);
             const badge = document.getElementById('cart-badge');
-            badge.textContent = count;
-            if (count > 0) badge.classList.remove('scale-0');
-            else badge.classList.add('scale-0');
+            const mobBadge = document.getElementById('mob-cart-badge');
+            if (badge) {
+                badge.textContent = count;
+                badge.classList.toggle('scale-0', count === 0);
+            }
+            if (mobBadge) {
+                mobBadge.textContent = count;
+                mobBadge.classList.toggle('scale-0', count === 0);
+            }
 
             const totals = calculateCartTotals();
             const container = document.getElementById('cart-items');
@@ -1526,7 +1756,7 @@
 
             const floatBar = document.getElementById('floating-cart-bar');
             if (floatBar) {
-                if (count > 0) {
+                if (count > 0 && state.view !== 'checkout' && state.view !== 'success') {
                     floatBar.classList.remove('hidden');
                     requestAnimationFrame(() => floatBar.classList.remove('translate-y-full'));
                     document.getElementById('floating-cart-count').textContent = `${count} Items`;
@@ -1548,17 +1778,26 @@
                 footer.classList.remove('hidden');
 
                 container.innerHTML = cartData.map(item => `
-                    <div class="flex gap-4 bg-white p-3 rounded-xl border border-gray-100 shadow-sm relative group">
+                    <div class="flex gap-4 bg-white p-3 rounded-xl border ${item.isFreeGift ? 'border-amber-300 bg-amber-50/20' : 'border-gray-100'} shadow-sm relative group">
                         <img src="${item.img}" class="w-16 h-16 rounded-lg object-contain border border-gray-100 bg-gray-50 p-1" onerror="this.src='https://placehold.co/100?text=Product'">
                         <div class="flex-1">
-                            <h4 class="font-bold text-gray-900 text-sm line-clamp-1 pr-6">${item.name}</h4>
-                            <div class="font-extrabold text-primary text-sm mt-1">₹${item.price}</div>
+                            <div class="flex items-center gap-1.5">
+                                <h4 class="font-bold text-gray-900 text-sm line-clamp-1 pr-2">${item.name}</h4>
+                                ${item.isFreeGift ? `<span class="bg-amber-500 text-white text-[9px] font-extrabold px-1.5 py-0.5 rounded shrink-0">🎁 FREE</span>` : ''}
+                            </div>
+                            <div class="font-extrabold ${item.isFreeGift ? 'text-amber-600' : 'text-primary'} text-sm mt-1">
+                                ${item.isFreeGift ? 'FREE (₹0.00)' : '₹' + item.price}
+                            </div>
                             <div class="flex items-center gap-3 mt-2">
-                                <div class="flex items-center bg-gray-100 rounded-md overflow-hidden border border-gray-200">
-                                    <button onclick="updateQty('${item.fbId}', -1)" class="w-7 h-7 flex items-center justify-center"><i class="fas fa-minus text-[10px]"></i></button>
-                                    <span class="w-6 text-center font-bold text-sm bg-white">${item.qty}</span>
-                                    <button onclick="updateQty('${item.fbId}', 1)" class="w-7 h-7 flex items-center justify-center"><i class="fas fa-plus text-[10px]"></i></button>
-                                </div>
+                                ${item.isFreeGift ? `
+                                    <span class="text-[11px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-md">${item.qty}× Auto Campaign Gift</span>
+                                ` : `
+                                    <div class="flex items-center bg-gray-100 rounded-md overflow-hidden border border-gray-200">
+                                        <button onclick="updateQty('${item.fbId}', -1)" class="w-7 h-7 flex items-center justify-center"><i class="fas fa-minus text-[10px]"></i></button>
+                                        <span class="w-6 text-center font-bold text-sm bg-white">${item.qty}</span>
+                                        <button onclick="updateQty('${item.fbId}', 1)" class="w-7 h-7 flex items-center justify-center"><i class="fas fa-plus text-[10px]"></i></button>
+                                    </div>
+                                `}
                             </div>
                         </div>
                     </div>
@@ -1575,9 +1814,9 @@
                     <div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl border border-gray-200 text-xs">
                         <div class="flex items-center gap-3">
                             <span class="w-6 h-6 bg-white border border-gray-200 rounded-md flex items-center justify-center font-bold text-gray-600">${item.qty}x</span>
-                            <span class="font-medium line-clamp-1">${item.name}</span>
+                            <span class="font-medium line-clamp-1">${item.name} ${item.isFreeGift ? '🎁 (Free Gift)' : ''}</span>
                         </div>
-                        <span class="font-bold text-primary">₹${(item.price * item.qty).toFixed(2)}</span>
+                        <span class="font-bold text-primary">${item.isFreeGift ? 'FREE' : '₹' + (item.price * item.qty).toFixed(2)}</span>
                     </div>
                 `).join('');
 
@@ -1627,9 +1866,14 @@
             const totals = calculateCartTotals();
             const orderId = 'ORD-' + Math.floor(100000 + Math.random() * 900000);
             
+            const storeId = state.activeRestaurant ? state.activeRestaurant.id : 'default';
+            const storeName = state.activeRestaurant ? state.activeRestaurant.name : 'LocalZip Center';
+
             const orderData = {
                 orderId: orderId,
                 userId: currentUser.uid,
+                storeId: storeId,
+                storeName: storeName,
                 items: cartData,
                 customer: { name, phone, address: combinedAddress },
                 payment: payment,
@@ -1689,6 +1933,7 @@
                 if (activeEmpty) activeEmpty.classList.add('hidden');
 
                 document.getElementById('active-spotlight-id').textContent = `Order #${topActive.orderId}`;
+                document.getElementById('active-spotlight-store').textContent = `Store: ${topActive.storeName || 'LocalZip Center'}`;
                 document.getElementById('active-spotlight-status').textContent = topActive.status;
                 const totalItems = (topActive.items || []).reduce((acc, i) => acc + (i.qty || 1), 0);
                 const totalAmt = topActive.totals ? topActive.totals.total : 0;
@@ -1737,11 +1982,12 @@
 
                     return `
                     <div class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-gray-200/80 hover:shadow-md transition-shadow">
-                        <div class="flex justify-between items-start mb-3">
+                        <div class="flex justify-between items-start mb-2">
                             <div>
                                 <span class="${statusClass} text-[10px] font-bold px-2 py-0.5 rounded uppercase block w-fit mb-1">${order.status}</span>
                                 <h4 class="font-bold text-gray-900 text-sm sm:text-base">Order #${order.orderId}</h4>
-                                <p class="text-[11px] text-gray-400">${dateStr}</p>
+                                <p class="text-[11px] text-amber-700 font-bold mt-0.5"><i class="fas fa-store"></i> ${order.storeName || 'LocalZip Center'}</p>
+                                <p class="text-[10px] text-gray-400 mt-0.5">${dateStr}</p>
                             </div>
                             <span class="font-extrabold text-primary text-base sm:text-lg">₹${finalTotal.toFixed(2)}</span>
                         </div>
@@ -1750,7 +1996,7 @@
                             <img src="${firstImg}" class="w-12 h-12 rounded-lg object-contain bg-white p-1 border border-gray-200 shrink-0" onerror="this.src='https://placehold.co/100?text=Product'">
                             <div class="flex-1 truncate">
                                 <p class="text-xs font-bold text-gray-900 truncate">${items[0] ? items[0].name : 'Products'}</p>
-                                <p class="text-[11px] text-gray-500 font-medium">${itemsCount} Items • Products: ₹${subtotal.toFixed(2)} | Fee: ₹${delivery.toFixed(2)}</p>
+                                <p class="text-[11px] text-gray-500 font-medium">${itemsCount} Items • Subtotal: ₹${subtotal.toFixed(2)} | Fee: ₹${delivery.toFixed(2)}</p>
                             </div>
                         </div>
 
@@ -1781,10 +2027,12 @@
 
             let addedCount = 0;
             order.items.forEach(item => {
-                const match = menuData.find(m => m.fbId === item.fbId) || getDefaultFallbackItems().find(m => m.fbId === item.fbId);
-                if (match) {
-                    addToCart(match.fbId);
-                    addedCount++;
+                if (!item.isFreeGift) {
+                    const match = menuData.find(m => m.fbId === item.fbId) || getDefaultFallbackItems().find(m => m.fbId === item.fbId);
+                    if (match) {
+                        addToCart(match.fbId);
+                        addedCount++;
+                    }
                 }
             });
 
@@ -1812,6 +2060,7 @@
 
             document.getElementById('modal-customer-name').textContent = order.customer ? order.customer.name : 'Customer';
             document.getElementById('modal-customer-phone').textContent = order.customer ? order.customer.phone : 'N/A';
+            document.getElementById('modal-customer-store').textContent = `Store: ${order.storeName || 'LocalZip Center'}`;
             document.getElementById('modal-customer-address').textContent = order.customer ? order.customer.address : 'N/A';
             document.getElementById('modal-payment-method').textContent = `Payment: ${(order.payment || 'CASH').toUpperCase()}`;
 
@@ -1844,15 +2093,20 @@
                 const imgSrc = item.img || 'https://placehold.co/100?text=Product';
 
                 return `
-                <div class="bg-white border border-gray-200/80 rounded-2xl p-3 flex items-center justify-between gap-3 shadow-sm">
+                <div class="bg-white border ${item.isFreeGift ? 'border-amber-300 bg-amber-50/20' : 'border-gray-200/80'} rounded-2xl p-3 flex items-center justify-between gap-3 shadow-sm">
                     <div class="flex items-center gap-3 overflow-hidden">
                         <img src="${imgSrc}" class="w-12 h-12 rounded-xl object-contain bg-gray-50 p-1 border border-gray-100 shrink-0" onerror="this.src='https://placehold.co/100?text=Product'">
                         <div class="truncate">
-                            <h5 class="font-bold text-gray-900 text-xs sm:text-sm truncate">${item.name}</h5>
-                            <p class="text-[11px] text-gray-500 font-medium">₹${uPrice.toFixed(2)} × ${q} unit(s)</p>
+                            <div class="flex items-center gap-1.5">
+                                <h5 class="font-bold text-gray-900 text-xs sm:text-sm truncate">${item.name}</h5>
+                                ${item.isFreeGift ? `<span class="bg-amber-500 text-white text-[9px] font-extrabold px-1.5 py-0.5 rounded shrink-0">🎁 FREE</span>` : ''}
+                            </div>
+                            <p class="text-[11px] text-gray-500 font-medium">${item.isFreeGift ? '100% Free Gift Item' : '₹' + uPrice.toFixed(2) + ' × ' + q + ' unit(s)'}</p>
                         </div>
                     </div>
-                    <span class="font-extrabold text-primary text-xs sm:text-sm shrink-0">₹${lineTotal.toFixed(2)}</span>
+                    <span class="font-extrabold ${item.isFreeGift ? 'text-amber-600' : 'text-primary'} text-xs sm:text-sm shrink-0">
+                        ${item.isFreeGift ? 'FREE' : '₹' + lineTotal.toFixed(2)}
+                    </span>
                 </div>
                 `;
             }).join('');
