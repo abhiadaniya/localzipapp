@@ -1,14 +1,12 @@
 const { onDocumentCreated } = require("firebase-functions/v2/firestore");
 const { defineSecret } = require("firebase-functions/params");
-const admin = require("firebase-admin");
-
-admin.initializeApp();
 
 const TELEGRAM_BOT_TOKEN = defineSecret("TELEGRAM_BOT_TOKEN");
 
 exports.sendNewOrderToTelegram = onDocumentCreated(
   {
-    document: "artifacts/localzip/users/{userId}/orders/{orderId}",
+    document: "artifacts/{appId}/public/data/orders/{orderId}",
+    region: "us-central1",
     secrets: [TELEGRAM_BOT_TOKEN],
   },
   async (event) => {
@@ -19,57 +17,56 @@ exports.sendNewOrderToTelegram = onDocumentCreated(
       return;
     }
 
-    const orderId = event.params.orderId;
+    const botToken = TELEGRAM_BOT_TOKEN.value();
 
-    const customer =
-      order.customerName ||
-      order.name ||
-      order.customer?.name ||
-      "Unknown";
+    // Your Telegram chat ID from getUpdates
+    const chatId = "6384569633";
 
-    const phone =
-      order.phone ||
-      order.customerPhone ||
-      order.customer?.phone ||
-      "Not available";
+    const orderId = order.orderId || event.params.orderId || "N/A";
+    const customerName = order.customer?.name || "N/A";
+    const phone = order.customer?.phone || "N/A";
+    const address = order.customer?.address || "N/A";
+    const storeName = order.storeName || "LocalZip Center";
+    const payment = order.payment || "N/A";
 
-    const total =
-      order.total ||
-      order.totalAmount ||
-      order.amount ||
-      0;
-
-    const address =
-      order.address ||
-      order.deliveryAddress ||
-      order.customer?.address ||
-      "Not available";
-
-    let itemsText = "No items";
+    let itemsText = "";
 
     if (Array.isArray(order.items)) {
       itemsText = order.items
         .map((item) => {
           const name = item.name || item.title || "Item";
-          const qty = item.quantity || item.qty || 1;
-          const price = item.price || 0;
+          const quantity = item.quantity || item.qty || 1;
+          const price =
+            item.price ??
+            item.total ??
+            item.finalPrice ??
+            0;
 
-          return `• ${name} × ${qty} — ₹${price}`;
+          return `• ${name} × ${quantity} — ₹${price}`;
         })
         .join("\n");
+    } else {
+      itemsText = "No item details";
     }
+
+    const total =
+      order.totals?.grandTotal ??
+      order.totals?.total ??
+      order.total ??
+      0;
 
     const message =
       `🛍️ *NEW LOCALZIP ORDER*\n\n` +
-      `🧾 Order ID: ${orderId}\n` +
-      `👤 Customer: ${customer}\n` +
-      `📞 Phone: ${phone}\n\n` +
+      `🧾 *Order ID:* ${orderId}\n` +
+      `🏪 *Store:* ${storeName}\n\n` +
+      `👤 *Customer:* ${customerName}\n` +
+      `📞 *Phone:* ${phone}\n\n` +
       `📦 *Items:*\n${itemsText}\n\n` +
-      `💰 *Total: ₹${total}*\n` +
-      `📍 Address: ${address}`;
+      `💰 *Total:* ₹${total}\n` +
+      `💳 *Payment:* ${payment}\n\n` +
+      `📍 *Address:*\n${address}`;
 
-    const url =
-      `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN.value()}/sendMessage`;
+    const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
 
     const response = await fetch(url, {
       method: "POST",
@@ -77,7 +74,7 @@ exports.sendNewOrderToTelegram = onDocumentCreated(
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        chat_id: "6384569633",
+        chat_id: chatId,
         text: message,
         parse_mode: "Markdown",
       }),
@@ -86,10 +83,10 @@ exports.sendNewOrderToTelegram = onDocumentCreated(
     const result = await response.json();
 
     if (!result.ok) {
-      console.error("Telegram error:", result);
-      throw new Error("Telegram notification failed");
+      console.error("Telegram API error:", result);
+      throw new Error("Telegram message failed");
     }
 
-    console.log("Telegram order notification sent.");
+    console.log("Telegram notification sent successfully.");
   }
 );
